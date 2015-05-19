@@ -1,3 +1,9 @@
+var iNot = iNotify.init({
+	effect: 'flash',
+	interval: 1000,
+	message:"(new message) Ace IM"
+});
+iNot.clearTimer();
 angular.module('AIMApp', ['angularMoment']);
 
 angular.module('AIMApp').factory('socket', function($rootScope){
@@ -36,11 +42,8 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	});
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
-		iNotify.init({
-			effect: 'flash',
-			interval: 1000,
-			message:"new"
-		});
+		iNot.setTimer();
+		setInterval("iNot.clearTimer()", 10000);
 	});
 });
 
