@@ -32,8 +32,7 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	$scope.share = {
-		messages: [{content: 'hi there, you are known as \'' + $scope.share.me + '\' now.', from: 'SYSTEM'}, 
-			$scope.help], 
+		messages: [$scope.help], 
 		me: 'someone'
 	};
 	$scope.help = {
