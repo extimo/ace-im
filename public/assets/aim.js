@@ -25,13 +25,13 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 });
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
-	$scope.messages = [];
+	$scope.share = {messages: []};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
-		$scope.messages = messages;
+		$scope.share.messages = messages;
 	});
 	socket.on('messageAdded', function(message){
-		$scope.messages.push(message);
+		$scope.share.messages.push(message);
 	});
 });
 
@@ -42,7 +42,8 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			return;
 		}
 		if($scope.newMessage == '/clear'){
-			$scope.messages = [];	
+			$scope.share.messages = [];
+			$scope.newMessage = '';	
 			return;
 		}
 		
