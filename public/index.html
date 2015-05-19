@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="AIMApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Ace IM</title>
+
+    <!-- Bootstrap -->
+    <link href="/renders/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="/assets/room.css" rel="stylesheet">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/renders/jquery/dist/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/renders/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/renders/angular/angular.min.js"></script>
+  </head>
+  <body>
+  	<nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container">
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="#">Ace IM</a>
+		</div>
+	  </div>
+	</nav>
+	<div class="container-fluid" style="margin-top:100px">
+	  <div class="col-md-8 col-sm-10 col-md-offset-2 col-sm-offset-1">
+		<div class="panel panel-default room" ng-controller="RoomCtrl">
+		  <div class="panel-heading room-header">
+			<h3 class="panel-title">Ace IM</h3>
+		  </div>
+		  <div class="panel-body room-content">
+			<div class="messages list-group" auto-scroll-to-bottom>
+			  <div class="list-group-item message" ng-repeat="message in messages">
+			    someone: {{message}}
+			  </div>
+			</div>
+			<form class="message-creator" ng-controller="MessageCreatorCtrl">
+			  <div class="form-group">
+			    <textarea required class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Ctrl+Enter to quick send"></textarea>
+			  </div>
+			</form>
+		  </div>
+		</div>
+	  </div>
+	</div>
+    <script src="/assets/aim.js"></script>
+  </body>
+</html>
