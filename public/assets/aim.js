@@ -57,6 +57,10 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		}
 		if($scope.newMessage.indexOf('/set') == 0){
 			var sps = $scope.newMessage.split(" ", 2);
+			if(sps[1].toUpperCase() == "SYSTEM"){
+				$scope.share.messages.push({content: 'resricted names', from: 'SYSTEM', createAt: new Date()});
+				return;
+			}
 			socket.emit('createMessage', 
 				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()});
 			$scope.share.me = sps[1];

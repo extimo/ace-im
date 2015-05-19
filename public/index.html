@@ -44,7 +44,7 @@
 		  <div class="panel-body room-content">
 			<div class="messages list-group" auto-scroll-to-bottom>
 			  <div class="list-group-item message" ng-repeat="message in share.messages track by $index">
-			    <kbd>{{message.from}}:</kbd><span am-time-ago="message.createAt" class="pull-right"></span>
+			    <p><kbd>{{message.from}}:</kbd><span am-time-ago="message.createAt" class="pull-right"></span></p>
 				<p>{{message.content}}</p>
 			  </div>
 			</div>
