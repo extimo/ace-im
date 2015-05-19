@@ -55,7 +55,7 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			$scope.newMessage = '';	
 			return;
 		}
-		if($scope.newMessage.indexOf('/set') > -1){
+		if($scope.newMessage.indexOf('/set') == 0){
 			var sps = $scope.newMessage.split(" ", 2);
 			socket.emit('createMessage', 
 				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()});
