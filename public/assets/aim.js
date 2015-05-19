@@ -31,14 +31,14 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 });
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
+	$scope.help = {
+		content: 'tips:\nsend /clear to clear history.\n' + 
+			'send /set {name} to apply a new nickname.\nsend /help to show this message again', 
+		from: 'SYSTEM'
+	};
 	$scope.share = {
 		messages: [$scope.help], 
 		me: 'someone'
-	};
-	$scope.help = {
-		content: 'tips:send /clear to clear history.\n' + 
-			'send /set {name} to apply a new nickname.\nsend /help to show this message again', 
-		from: 'SYSTEM'
 	};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
