@@ -43,7 +43,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
 		iNot.addTimer();
-		setInterval("iNot.clearTimer()", 10000);
+		setInterval("iNot.clearTimer()", 60000);
 	});
 });
 
