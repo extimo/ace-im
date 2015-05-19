@@ -25,9 +25,8 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 });
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
-	$scope.me = 'someone';
 	$scope.help = {content: 'send /clear to clear history\nsend /set {name} to apply a new nickname', from: 'SYSTEM'};
-	$scope.share = {messages: [$scope.help]};
+	$scope.share = {messages: [$scope.help], me: 'someone'};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = $scope.share.messages.concat(messages);
@@ -53,8 +52,16 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			$scope.newMessage = '';	
 			return;
 		}
+		if($scope.newMessage.indexOf('/set') > -1){
+			var sps = $scope.newMessage.split(" ", 2);
+			socket.emit('createMessage', 
+				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()});
+			$scope.share.me = sps[1];
+			$scope.newMessage = '';	
+			return;
+		}
 		
-		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.me};
+		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
 		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
 	};
