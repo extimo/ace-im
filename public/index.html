@@ -41,7 +41,7 @@
 		  </div>
 		  <div class="panel-body room-content">
 			<div class="messages list-group" auto-scroll-to-bottom>
-			  <div class="list-group-item message" ng-repeat="message in messages">
+			  <div class="list-group-item message" ng-repeat="message in messages track by $index">
 			    someone: {{message}}
 			  </div>
 			</div>
