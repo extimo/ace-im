@@ -20,6 +20,9 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('createMessage', function(message){
 		messages.push(message);
+		if(messages.length > 500){
+			messages = messages.slice(300);
+		}
 		io.sockets.emit('messageAdded', message);
 	});
 });

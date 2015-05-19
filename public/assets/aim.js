@@ -1,7 +1,4 @@
-angular.module('AIMApp', ['angularMoment']).
-run(function(amMoment){
-	amMoment.changeLocale('zh-cn');
-});
+angular.module('AIMApp', ['angularMoment']);
 
 angular.module('AIMApp').factory('socket', function($rootScope){
 	var socket = io.connect('/');
@@ -29,11 +26,11 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	$scope.me = 'someone';
-	$scope.help = {content: 'send /clear to clear history\nsend', from: 'SYSTEM'};
+	$scope.help = {content: 'send /clear to clear history\nsend /set {name} to apply a new nickname', from: 'SYSTEM'};
 	$scope.share = {messages: [$scope.help]};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
-		$scope.share.messages = messages;
+		$scope.share.messages = $scope.share.messages.concat(messages);
 	});
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
