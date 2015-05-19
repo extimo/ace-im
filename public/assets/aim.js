@@ -26,9 +26,9 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	$scope.help = []; 
-	$scope.help[] = {content: 'send /clear to clear history', from: 'SYSTEM'};
-	$scope.help[] = {content: 'send /set {name} to apply a new nickname', from: 'SYSTEM'};
-	$scope.help[] = {content: 'send /help to show this tip again', from: 'SYSTEM'};
+	$scope.help[].push({content: 'send /clear to clear history', from: 'SYSTEM'});
+	$scope.help[].push({content: 'send /set {name} to apply a new nickname', from: 'SYSTEM'});
+	$scope.help[].push({content: 'send /help to show this tip again', from: 'SYSTEM'});
 	$scope.share = {messages: $scope.help, me: 'someone'};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
