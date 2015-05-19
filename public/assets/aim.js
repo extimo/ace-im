@@ -1,6 +1,6 @@
 angular.module('AIMApp', ['angularMoment']).
-run(function($window){
-	$window.changeLocale('zh-cn');
+run(function(amMoment){
+	amMoment.changeLocale('zh-cn');
 });
 
 angular.module('AIMApp').factory('socket', function($rootScope){
