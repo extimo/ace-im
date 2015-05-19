@@ -5,6 +5,6 @@ html, body{
 
 .messages{
 	height: 80%;
-	overflow: hidden;
+	overflow: auto;
 }
 
