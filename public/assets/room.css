@@ -1,4 +1,7 @@
+body{
+	height: 100%;
+}
+
 .messages{
-	height: 600px;
 	overflow: auto;
 }

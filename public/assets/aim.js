@@ -41,6 +41,10 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		if($scope.newMessage == ''){
 			return;
 		}
+		if($scope.newMessage == '/clear'){
+			$scope.messages = [];	
+			return;
+		}
 		
 		socket.emit('createMessage', $scope.newMessage);
 		$scope.newMessage = '';

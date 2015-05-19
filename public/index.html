@@ -33,7 +33,7 @@
 		</div>
 	  </div>
 	</nav>
-	<div class="container-fluid" style="margin-top:100px">
+	<div class="container-fluid" id="main" style="margin-top:100px">
 	  <div class="col-md-8 col-sm-10 col-md-offset-2 col-sm-offset-1">
 		<div class="panel panel-default room" ng-controller="RoomCtrl">
 		  <div class="panel-heading room-header">
@@ -55,5 +55,9 @@
 	  </div>
 	</div>
     <script src="/assets/aim.js"></script>
+    <script>
+      $(document).ready(function(){
+      	$("#main").height($("body").height() * 0.8);
+      });
   </body>
 </html>
