@@ -39,12 +39,8 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		iNotify.init({
 			effect: 'flash',
 			interval: 1000,
-			message:"new",
-			updateFavicon:{
-				textColor: "#fff",
-				backgroundColor: "#000"
-			}
-		}).setFavicon("i");
+			message:"new"
+		});
 	});
 });
 
