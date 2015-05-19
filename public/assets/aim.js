@@ -36,6 +36,15 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	});
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
+		iNotify.init({
+			effect: 'flash',
+			interval: 1000,
+			message:"new",
+			updateFavicon:{
+				textColor: "#fff",
+				backgroundColor: "#000"
+			}
+		}).setFavicon("i");
 	});
 });
 
@@ -51,7 +60,7 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			return;
 		}
 		if($scope.newMessage == '/help'){
-			$scope.share.messages.concat($scope.help);
+			$scope.share.messages = $scope.share.messages.concat($scope.help);
 			$scope.newMessage = '';	
 			return;
 		}
