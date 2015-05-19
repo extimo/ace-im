@@ -1,10 +1,10 @@
-html, body{
+html, body, #main-container, #main, .room{
 	height: 100%;
-	overflow: auto;
+	overflow: hidden;
 }
 
 .messages{
 	height: 80%;
-	overflow: hidden;
+	overflow: auto;
 }
 
