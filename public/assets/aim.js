@@ -1,4 +1,7 @@
-angular.module('AIMApp', []);
+angular.module('AIMApp', ['angularMoment']).
+run(function($window){
+	$window.changeLocale('zh-cn');
+});
 
 angular.module('AIMApp').factory('socket', function($rootScope){
 	var socket = io.connect('/');
@@ -25,7 +28,9 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 });
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
-	$scope.share = {messages: []};
+	$scope.me = 'someone';
+	$scope.help = {content: 'send /clear to clear history\nsend', from: 'SYSTEM'};
+	$scope.share = {messages: [$scope.help]};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = messages;
@@ -46,8 +51,14 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			$scope.newMessage = '';	
 			return;
 		}
+		if($scope.newMessage == '/help'){
+			$scope.share.messages.push($scope.help);
+			$scope.newMessage = '';	
+			return;
+		}
 		
-		socket.emit('createMessage', $scope.newMessage);
+		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.me};
+		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
 	};
 });

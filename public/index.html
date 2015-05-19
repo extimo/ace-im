@@ -24,6 +24,9 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/renders/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/renders/angular/angular.min.js"></script>
+    <script src="/renders/moment/moment.js"></script>
+    <script src="/renders/anguler-moment/anguler-moment.min.js"></script>
+    <script src="/renders/moment/locale/zh-cn.js"></script>
   </head>
   <body>
   	<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -42,7 +45,8 @@
 		  <div class="panel-body room-content">
 			<div class="messages list-group" auto-scroll-to-bottom>
 			  <div class="list-group-item message" ng-repeat="message in share.messages track by $index">
-			    someone: {{message}}
+			    {{message.from}}: {{message.content}}
+			    <time am-time-ago="message.createAt"></time>
 			  </div>
 			</div>
 			<form class="message-creator" ng-controller="MessageCreatorCtrl">
