@@ -43,9 +43,10 @@ $("body").mouseleave(function(){
 	in_view = false;
 });
 $(window).resize(function(){
-	$(".messages").height(parseInt($("html").height() - 300));
-	$(".messages").css("max-height", parseInt($("html").height() - 300));
-	$(".messages").css("min-height", parseInt($("html").height() - 300));
+	var h = parseInt($("html").height() - 100 - parseInt($(".navbar").height()) - parseInt($(".panel-heading").height());
+	$(".messages").height(h);
+	$(".messages").css("max-height", h);
+	$(".messages").css("min-height", h);
 });
 $(window).resize();
 var room = location.search == "" ? '0' : location.search.substring(1);
@@ -133,42 +134,6 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
 		socket.emit('createMessage', {room: room, message: msg});
 		$scope.newMessage = '';
-	};
-});
-
-angular.module('AIMApp').controller('MessageCreatorCtrlM', function($scope, socket){
-	$scope.newMessageM = '';
-	$scope.createMessage = function(){
-		if($scope.newMessageM == ''){
-			return;
-		}
-		if($scope.newMessageM == '/clear'){
-			$scope.share.messages = [];
-			$scope.newMessageM = '';	
-			return;
-		}
-		if($scope.newMessageM == '/help'){
-			$scope.share.messages.push($scope.help);
-			$scope.newMessageM = '';	
-			return;
-		}
-		if($scope.newMessageM.indexOf('/set') == 0){
-			var sps = $scope.newMessageM.split(" ", 2);
-			$scope.newMessageM = '';	
-			if(sps[1].toUpperCase() == "SYSTEM"){
-				$scope.share.messages.push({content: 'resricted name: ' + sps[1], from: 'SYSTEM', createAt: new Date()});
-				return;
-			}
-			socket.emit('createMessage', {room: room, message: 
-				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()}});
-			$scope.share.me = sps[1];
-			$.cookie('aim_nickname_room' + room, sps[1], { expires: 1000 });
-			return;
-		}
-		
-		var msg = {content: $scope.newMessageM, createAt: new Date(), from: $scope.share.me};
-		socket.emit('createMessage', {room: room, message: msg});
-		$scope.newMessageM = '';
 	};
 });
 
