@@ -35,12 +35,12 @@ var reminder = {
 	}
 };
 $("body").mouseenter(function(){reminder.clear();});
-$("html").resize(function(){
+$(window).resize(function(){
 	$(".messages").height(parseInt($("html").height() - 300));
 	$(".messages").css("max-height", parseInt($("html").height() - 300));
 	$(".messages").css("min-height", parseInt($("html").height() - 300));
 });
-$("html").resize();
+$(window).resize();
 
 angular.module('AIMApp', ['angularMoment']);
 
