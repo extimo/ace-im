@@ -70,7 +70,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	};
 	$scope.share = {
 		messages: [$scope.help], 
-		me: 'someone'
+		me: $.cookie('aim_nickname') ? $.cookie('aim_nickname') : 'someone'
 	};
 	socket.emit('getAllMessages');
 	socket.on('allMessages', function(messages){
@@ -78,7 +78,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	});
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
-		if(message.from != $scope.share.me){
+		if(message.from != $scope.share.me && message.from != "SYSTEM"){
 			reminder.begin();
 		}
 	});
@@ -109,6 +109,7 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			socket.emit('createMessage', 
 				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()});
 			$scope.share.me = sps[1];
+			$.cookie('aim_nickname', sps[1], { expires: 1000 });
 			$scope.newMessage = '';	
 			return;
 		}
