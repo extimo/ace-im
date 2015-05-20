@@ -41,6 +41,7 @@ $(window).resize(function(){
 	$(".messages").css("min-height", parseInt($("html").height() - 300));
 });
 $(window).resize();
+var room = location.search == "" ? 0 : location.search.substring(1);
 
 angular.module('AIMApp', ['angularMoment']);
 
@@ -78,14 +79,16 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		messages: [$scope.help], 
 		me: $.cookie('aim_nickname') ? $.cookie('aim_nickname') : 'someone'
 	};
-	socket.emit('getAllMessages');
+	socket.emit('getAllMessages', room);
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = $scope.share.messages.concat(messages);
 	});
-	socket.on('messageAdded', function(message){
-		$scope.share.messages.push(message);
-		if(message.from != $scope.share.me && message.from != "SYSTEM"){
-			reminder.begin();
+	socket.on('messageAdded', function(who, message){
+		if(who == room){
+			$scope.share.messages.push(message);
+			if(message.from != $scope.share.me && message.from != "SYSTEM"){
+				reminder.begin();
+			}
 		}
 	});
 });
