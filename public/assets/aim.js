@@ -24,7 +24,7 @@ var reminder = {
 		}
 	}
 };
-$(body).focus(function(){reminder.clear();});
+$("body").focus(function(){reminder.clear();});
 
 angular.module('AIMApp', ['angularMoment']);
 
