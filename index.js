@@ -12,15 +12,20 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function() {
 	console.log('Node app is running on port', app.get('port'));
 }));
 
-var messages = [[]];
+var messages = {};
 
 io.sockets.on('connection', function(socket){	
-	socket.on('getAllMessages', function(i){
-		room = parseInt(i);
+	socket.on('getAllMessages', function(room){
+		if(!messages[room]){
+			messages[room] = [];
+		}
 		socket.emit('allMessages', messages[room]);
 	});
-	socket.on('createMessage', function(i, message){
-		room = parseInt(i);
+	socket.on('createMessage', function(room, message){
+		console.log('room: ' + room + ' message: ' + message);
+		if(!messages[room]){
+			messages[room] = [];
+		}
 		messages[room].push(message);
 		if(messages[room].length > 500){
 			messages[room] = messages[room].slice(300);
