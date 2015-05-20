@@ -1,9 +1,32 @@
-//var iNot = iNotify.init({
-//	effect: 'flash',
-//	interval: 1000,
-//	message:"(new message) Ace IM"
-//});
-//iNot.clearTimer();
+var newMessageRemind = {
+	_step: 0,
+	_title: document.title,
+	_timer: null,
+	_active: false,
+	show:function(){
+		if(!_active){
+			_active = true;
+			var temps = newMessageRemind._title.replace("(   )", "").replace("(new)", "");
+			newMessageRemind._timer = setTimeout(function() {
+				newMessageRemind.show();
+				newMessageRemind._step++;
+				if (newMessageRemind._step == 3) { newMessageRemind._step = 1 };
+				if (newMessageRemind._step == 1) { document.title = "(   )" + temps };
+				if (newMessageRemind._step == 2) { document.title = "(new)" + temps };
+			}, 800);
+		}
+	},
+	clear: function(){
+		if(_active){
+			_active = false;
+			clearTimeout(newMessageRemind._timer );
+			document.title = newMessageRemind._title;
+		}
+	}
+};
+var reminder = new newMessageRemind();
+$(body).focus(function(){reminder.clear();});
+
 angular.module('AIMApp', ['angularMoment']);
 
 angular.module('AIMApp').factory('socket', function($rootScope){
@@ -46,8 +69,9 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	});
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
-		//iNot.addTimer();
-		//setInterval("iNot.clearTimer()", 60000);
+		if(message.from != $scope.share.me){
+			reminder.show();
+		}
 	});
 });
 
