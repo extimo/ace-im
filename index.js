@@ -21,16 +21,16 @@ io.sockets.on('connection', function(socket){
 		}
 		socket.emit('allMessages', messages[room]);
 	});
-	socket.on('createMessage', function(room, message){
-		console.log('room: ' + room + ' message: ' + message);
-		if(!messages[room]){
-			messages[room] = [];
+	socket.on('createMessage', function(data){
+		console.log('room: ' + data.room + ' message: ' + data.message);
+		if(!messages[data.room]){
+			messages[data.room] = [];
 		}
-		messages[room].push(message);
-		if(messages[room].length > 500){
-			messages[room] = messages[room].slice(300);
+		messages[data.room].push(data.message);
+		if(messages[data.room].length > 500){
+			messages[data.room] = messages[data.room].slice(300);
 		}
-		io.sockets.emit('messageAdded', room, message);
+		io.sockets.emit('messageAdded', data);
 	});
 });
 

@@ -48,7 +48,7 @@ $(window).resize(function(){
 	$(".messages").css("min-height", parseInt($("html").height() - 300));
 });
 $(window).resize();
-var room = location.search == "" ? 0 : parseInt(location.search.substring(1));
+var room = location.search == "" ? '0' : location.search.substring(1);
 
 angular.module('AIMApp', ['angularMoment']);
 
@@ -90,10 +90,10 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = $scope.share.messages.concat(messages);
 	});
-	socket.on('messageAdded', function(who, message){
-		if(parseInt(who) == room){
-			$scope.share.messages.push(message);
-			if(message.from != $scope.share.me && message.from != "SYSTEM" && !in_view){
+	socket.on('messageAdded', function(data){
+		if(data.room == room){
+			$scope.share.messages.push(data.message);
+			if(data.message.from != $scope.share.me &&data.message.from != "SYSTEM" && !in_view){
 				reminder.begin();
 			}
 		}
@@ -123,15 +123,15 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 				$scope.share.messages.push({content: 'resricted name: ' + sps[1], from: 'SYSTEM', createAt: new Date()});
 				return;
 			}
-			socket.emit('createMessage', 
-				room, {content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()});
+			socket.emit('createMessage', {room: room, message: 
+				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()}});
 			$scope.share.me = sps[1];
 			$.cookie('aim_nickname_room' + room, sps[1], { expires: 1000 });
 			return;
 		}
 		
 		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
-		socket.emit('createMessage', room, msg);
+		socket.emit('createMessage', {room: room, message: msg});
 		$scope.newMessage = '';
 	};
 });
