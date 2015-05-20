@@ -35,6 +35,9 @@ var reminder = {
 	}
 };
 $("body").mouseenter(function(){reminder.clear();});
+$("#main").height(parseInt($("html").height() - 150));
+$("#main").css("max-height", parseInt($("html").height() - 150));
+$("#main").css("min-height", parseInt($("html").height() - 150));
 
 angular.module('AIMApp', ['angularMoment']);
 

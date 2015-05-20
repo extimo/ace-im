@@ -1,8 +1,8 @@
-body{
+html, body{
 	height: 100%;
+	overflow: hidden;
 }
 
 .messages{
-	height: 500px;
 	overflow: auto;
 }
