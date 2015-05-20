@@ -3,28 +3,30 @@ var reminder = {
 	_title: document.title,
 	_timer: null,
 	_active: false,
+	sound: function(){	
+		if(!reminder.audioElm){
+			var a = document.createElement('audio');
+			if(!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''))){
+				reminder.audioElm = document.createElement('audio');
+				reminder.audioElm.src = '/assets/sms.mp3';
+				document.body.appendChild(reminder.audioElm);
+				reminder._type = 1;
+			}else{ 
+				reminder.audioElm = 'shit';
+				reminder._type = 0;
+			} 
+		}
+		if(reminder._type == 1){
+			reminder.audioElm.play();
+		}
+		else{
+			$("embed").remove();
+			$("body").append("<embed src='/assets/sms.mp3' autostart=true hidden=true loop=false>");
+		}
+	}
 	begin:function(){
 		if(!reminder._active){
 			reminder._active = true;
-            if(!reminder.audioElm){
-				var a = document.createElement('audio');
-				if(!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''))){
-					reminder.audioElm = document.createElement('audio');
-					reminder.audioElm.src = '/assets/sms.mp3';
-					document.body.appendChild(reminder.audioElm);
-					reminder._type = 1;
-				}else{ 
-					reminder.audioElm = 'shit';
-					reminder._type = 0;
-				} 
-            }
-			if(reminder._type == 1){
-				reminder.audioElm.play();
-			}
-			else{
-				$("embed").remove();
-				$("body").append("<embed src='/assets/sms.mp3' autostart=true hidden=true loop=false>")
-			}
 			reminder.show();
 		}
 	},
@@ -109,6 +111,9 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 			$scope.share.messages.push(data.message);
 			if(data.message.from != $scope.share.me &&data.message.from != "SYSTEM" && !in_view){
 				reminder.begin();
+			}
+			if(data.message.from != $scope.share.me){
+				reminder.sound();
 			}
 		}
 	});
