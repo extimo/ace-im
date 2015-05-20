@@ -1,4 +1,4 @@
-var newMessageRemind = {
+var reminder = {
 	_step: 0,
 	_title: document.title,
 	_timer: null,
@@ -24,7 +24,6 @@ var newMessageRemind = {
 		}
 	}
 };
-var reminder = new newMessageRemind();
 $(body).focus(function(){reminder.clear();});
 
 angular.module('AIMApp', ['angularMoment']);
