@@ -73,7 +73,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.on('messageAdded', function(message){
 		$scope.share.messages.push(message);
 		if(message.from != $scope.share.me){
-			reminder.show();
+			reminder.begin();
 		}
 	});
 });
