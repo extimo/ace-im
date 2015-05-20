@@ -35,9 +35,9 @@ var reminder = {
 	}
 };
 $("body").mouseenter(function(){reminder.clear();});
-$(".messages").height(parseInt($("html").height() - 150));
-$(".messages").css("max-height", parseInt($("html").height() - 150));
-$(".messages").css("min-height", parseInt($("html").height() - 150));
+$(".messages").height(parseInt($("html").height() - 250));
+$(".messages").css("max-height", parseInt($("html").height() - 250));
+$(".messages").css("min-height", parseInt($("html").height() - 250));
 
 angular.module('AIMApp', ['angularMoment']);
 
