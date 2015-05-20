@@ -55,9 +55,9 @@
 			    <textarea required class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Ctrl+Enter to break line"></textarea>
 			  </div>
 			</form>
-			<form class="message-creator visible-xs-block form-inline" ng-controller="MessageCreatorCtrl">
+			<form class="message-creator visible-xs-block form-inline" ng-controller="MessageCreatorMCtrl">
 			  <div class="form-group">
-			    <input type="text" required class="form-control message-input" ng-model="newMessage" placeholder="message here" />
+			    <input type="text" required class="form-control message-input" ng-model="newMessageM" placeholder="message here" />
 				<button class="btn btn-primary" onclick="createMessage()">send</button>
 			  </div>
 			</form>

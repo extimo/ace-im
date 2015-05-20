@@ -136,6 +136,42 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 	};
 });
 
+angular.module('AIMApp').controller('MessageCreatorCtrlM', function($scope, socket){
+	$scope.newMessageM = '';
+	$scope.createMessage = function(){
+		if($scope.newMessageM == ''){
+			return;
+		}
+		if($scope.newMessageM == '/clear'){
+			$scope.share.messages = [];
+			$scope.newMessageM = '';	
+			return;
+		}
+		if($scope.newMessageM == '/help'){
+			$scope.share.messages.push($scope.help);
+			$scope.newMessageM = '';	
+			return;
+		}
+		if($scope.newMessageM.indexOf('/set') == 0){
+			var sps = $scope.newMessageM.split(" ", 2);
+			$scope.newMessageM = '';	
+			if(sps[1].toUpperCase() == "SYSTEM"){
+				$scope.share.messages.push({content: 'resricted name: ' + sps[1], from: 'SYSTEM', createAt: new Date()});
+				return;
+			}
+			socket.emit('createMessage', {room: room, message: 
+				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()}});
+			$scope.share.me = sps[1];
+			$.cookie('aim_nickname_room' + room, sps[1], { expires: 1000 });
+			return;
+		}
+		
+		var msg = {content: $scope.newMessageM, createAt: new Date(), from: $scope.share.me};
+		socket.emit('createMessage', {room: room, message: msg});
+		$scope.newMessageM = '';
+	};
+});
+
 angular.module('AIMApp').directive('autoScrollToBottom', function(){
 	return {
 		link: function(scope, element, attrs){
