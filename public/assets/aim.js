@@ -7,11 +7,24 @@ var reminder = {
 		if(!reminder._active){
 			reminder._active = true;
             if(!reminder.audioElm){
-                reminder.audioElm = document.createElement('audio');
-                reminder.audioElm.src = '/assets/sms.mp3';
-                document.body.appendChild(reminder.audioElm);
+				var a = document.createElement('audio');
+				if(!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''))){
+					reminder.audioElm = document.createElement('audio');
+					reminder.audioElm.src = '/assets/sms.mp3';
+					document.body.appendChild(reminder.audioElm);
+					reminder._type = 1;
+				}else{ 
+					reminder.audioElm = 'shit';
+					reminder._type = 0;
+				} 
             }
-            reminder.audioElm.play();
+			if(reminder._type == 1){
+				reminder.audioElm.play();
+			}
+			else{
+				$("embed").remove();
+				$("body").append("<embed src='/assets/sms.mp3' autostart=true hidden=true loop=false>")
+			}
 			reminder.show();
 		}
 	},
