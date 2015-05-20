@@ -22,7 +22,6 @@ io.sockets.on('connection', function(socket){
 		socket.emit('allMessages', messages[room]);
 	});
 	socket.on('createMessage', function(data){
-		console.log('room: ' + data.room + ' message: ' + data.message);
 		if(!messages[data.room]){
 			messages[data.room] = [];
 		}
