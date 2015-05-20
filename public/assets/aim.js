@@ -3,28 +3,32 @@ var reminder = {
 	_title: document.title,
 	_timer: null,
 	_active: false,
-	show:function(){
+	begin:function(){
 		if(!reminder._active){
 			reminder._active = true;
-			var temps = reminder._title.replace("(   )", "").replace("(new)", "");
-			reminder._timer = setTimeout(function() {
-				reminder.show();
-				reminder._step++;
-				if (reminder._step == 3) { reminder._step = 1 };
-				if (reminder._step == 1) { document.title = "(   )" + temps };
-				if (reminder._step == 2) { document.title = "(new)" + temps };
-			}, 800);
+			reminder.show();
 		}
+	},
+	show:function(){
+		reminder._timer = setTimeout(function() {
+			reminder.show();
+			reminder._step++;
+			if (reminder._step == 3) { reminder._step = 1 };
+			if (reminder._step == 1) { document.title = reminder._title };
+			if (reminder._step == 2) { document.title = "(new)" + reminder._title };
+		}, 800);
 	},
 	clear: function(){
 		if(reminder._active){
 			reminder._active = false;
-			clearTimeout(reminder._timer );
-			document.title = reminder._title;
+			clearTimeout(reminder._timer);
+			setTimeout(function() {
+				document.title = reminder._title;
+			}, 800);
 		}
 	}
 };
-$("body").focus(function(){reminder.clear();});
+$("body").mouseenter(function(){reminder.clear();});
 
 angular.module('AIMApp', ['angularMoment']);
 
@@ -55,7 +59,7 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	$scope.help = {
 		content: 'tips:\nsend /clear to clear history.\n' + 
-			'send /set {name} to apply a new nickname.\nsend /help to show this message again', 
+			'send /set {name} to apply a new nickname.\nsend /help to show reminder message again', 
 		from: 'SYSTEM'
 	};
 	$scope.share = {
