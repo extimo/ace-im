@@ -84,7 +84,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	};
 	$scope.share = {
 		messages: [$scope.help], 
-		me: $.cookie('aim_nickname') ? $.cookie('aim_nickname') : 'someone'
+		me: $.cookie('aim_nickname_room' + room) ? $.cookie('aim_nickname_room' + room) : 'someone'
 	};
 	socket.emit('getAllMessages', room);
 	socket.on('allMessages', function(messages){
