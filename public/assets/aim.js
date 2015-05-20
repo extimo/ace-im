@@ -35,9 +35,12 @@ var reminder = {
 	}
 };
 $("body").mouseenter(function(){reminder.clear();});
-$(".messages").height(parseInt($("html").height() - 250));
-$(".messages").css("max-height", parseInt($("html").height() - 250));
-$(".messages").css("min-height", parseInt($("html").height() - 250));
+$("html").resize(function(){
+	$(".messages").height(parseInt($("html").height() - 300));
+	$(".messages").css("max-height", parseInt($("html").height() - 300));
+	$(".messages").css("min-height", parseInt($("html").height() - 300));
+});
+$("html").resize();
 
 angular.module('AIMApp', ['angularMoment']);
 
