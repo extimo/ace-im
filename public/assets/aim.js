@@ -23,7 +23,7 @@ var reminder = {
 			$("embed").remove();
 			$("body").append("<embed src='/assets/sms.mp3' autostart=true hidden=true loop=false>");
 		}
-	}
+	},
 	begin:function(){
 		if(!reminder._active){
 			reminder._active = true;
