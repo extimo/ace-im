@@ -6,6 +6,12 @@ var reminder = {
 	begin:function(){
 		if(!reminder._active){
 			reminder._active = true;
+            if(!reminder.audioElm){
+                reminder.audioElm = document.createElement('audio');
+                reminder.audioElm.src = 'sms.mp3';
+                document.body.appendChild(reminder.audioElm);
+            }
+            reminder.audioElm.play();
 			reminder.show();
 		}
 	},
