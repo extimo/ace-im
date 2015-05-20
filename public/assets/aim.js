@@ -8,7 +8,7 @@ var reminder = {
 			reminder._active = true;
             if(!reminder.audioElm){
                 reminder.audioElm = document.createElement('audio');
-                reminder.audioElm.src = 'sms.mp3';
+                reminder.audioElm.src = '/assets/sms.mp3';
                 document.body.appendChild(reminder.audioElm);
             }
             reminder.audioElm.play();
