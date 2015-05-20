@@ -43,7 +43,7 @@ $("body").mouseleave(function(){
 	in_view = false;
 });
 $(window).resize(function(){
-	var h = parseInt($("html").height()) - 200 - parseInt($(".navbar").height()) - parseInt($(".panel-heading").height());
+	var h = parseInt($("html").height()) - 240 - parseInt($(".navbar").height()) - parseInt($(".panel-heading").height());
 	$(".messages").height(h);
 	$(".messages").css("max-height", h);
 	$(".messages").css("min-height", h);
