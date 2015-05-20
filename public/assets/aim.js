@@ -4,23 +4,23 @@ var reminder = {
 	_timer: null,
 	_active: false,
 	show:function(){
-		if(!_active){
-			_active = true;
-			var temps = newMessageRemind._title.replace("(   )", "").replace("(new)", "");
-			newMessageRemind._timer = setTimeout(function() {
-				newMessageRemind.show();
-				newMessageRemind._step++;
-				if (newMessageRemind._step == 3) { newMessageRemind._step = 1 };
-				if (newMessageRemind._step == 1) { document.title = "(   )" + temps };
-				if (newMessageRemind._step == 2) { document.title = "(new)" + temps };
+		if(!reminder._active){
+			reminder._active = true;
+			var temps = reminder._title.replace("(   )", "").replace("(new)", "");
+			reminder._timer = setTimeout(function() {
+				reminder.show();
+				reminder._step++;
+				if (reminder._step == 3) { reminder._step = 1 };
+				if (reminder._step == 1) { document.title = "(   )" + temps };
+				if (reminder._step == 2) { document.title = "(new)" + temps };
 			}, 800);
 		}
 	},
 	clear: function(){
-		if(_active){
-			_active = false;
-			clearTimeout(newMessageRemind._timer );
-			document.title = newMessageRemind._title;
+		if(reminder._active){
+			reminder._active = false;
+			clearTimeout(reminder._timer );
+			document.title = reminder._title;
 		}
 	}
 };
