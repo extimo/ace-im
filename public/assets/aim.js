@@ -34,7 +34,14 @@ var reminder = {
 		}
 	}
 };
-$("body").mouseenter(function(){reminder.clear();});
+var in_view = true;
+$("body").mouseenter(function(){
+	in_view = true;
+	reminder.clear();
+});
+$("body").mouseleave(function(){
+	in_view = false;
+});
 $(window).resize(function(){
 	$(".messages").height(parseInt($("html").height() - 300));
 	$(".messages").css("max-height", parseInt($("html").height() - 300));
@@ -84,9 +91,9 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		$scope.share.messages = $scope.share.messages.concat(messages);
 	});
 	socket.on('messageAdded', function(who, message){
-		if(who == room){
+		if(parseInt(who) == room){
 			$scope.share.messages.push(message);
-			if(message.from != $scope.share.me && message.from != "SYSTEM"){
+			if(message.from != $scope.share.me && message.from != "SYSTEM" && !in_view){
 				reminder.begin();
 			}
 		}

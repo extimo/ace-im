@@ -16,14 +16,16 @@ var messages = [[]];
 
 io.sockets.on('connection', function(socket){	
 	socket.on('getAllMessages', function(i){
-		socket.emit('allMessages', messages[i]);
+		room = parseInt(i);
+		socket.emit('allMessages', messages[room]);
 	});
 	socket.on('createMessage', function(i, message){
-		messages[i].push(message);
-		if(messages[i].length > 500){
-			messages[i] = messages[i].slice(300);
+		room = parseInt(i);
+		messages[room].push(message);
+		if(messages[room].length > 500){
+			messages[room] = messages[room].slice(300);
 		}
-		io.sockets.emit('messageAdded', i, message);
+		io.sockets.emit('messageAdded', room, message);
 	});
 });
 
