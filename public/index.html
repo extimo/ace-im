@@ -37,7 +37,8 @@
 		</div>
 	  </div>
 	</nav>
-	<div style="min-height: 50px" class="hidden-xs"></div>
+	<div style="min-height: 30px" class="hidden-xs"></div>
+	<div style="min-height: 10px"></div>
 	<div class="container-fluid">
 	  <div class="col-md-8 col-sm-12 col-md-offset-2">
 		<div class="panel panel-default room" ng-controller="RoomCtrl">
@@ -53,7 +54,7 @@
 			</div>
 			<form class="message-creator" ng-controller="MessageCreatorCtrl">
 			  <div class="form-group">
-			    <textarea required class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Ctrl+Enter to break line"></textarea>
+			    <textarea class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Ctrl+Enter to break line"></textarea>
 				<button style="margin-top:10px;" type="submit" class="btn btn-block btn-primary visible-xs-block" ng-click="createMessage()">send</button>
 			  </div>
 			</form>
