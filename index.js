@@ -12,7 +12,7 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function() {
 	console.log('Node app is running on port', app.get('port'));
 }));
 
-var messages = [];
+var messages = [[]];
 
 io.sockets.on('connection', function(socket){	
 	socket.on('getAllMessages', function(i){
@@ -21,7 +21,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('createMessage', function(i, message){
 		messages[i].push(message);
 		if(messages[i].length > 500){
-			messages[i] = messages.slice(300);
+			messages[i] = messages[i].slice(300);
 		}
 		io.sockets.emit('messageAdded', i, message);
 	});
