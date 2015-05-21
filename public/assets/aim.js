@@ -1,12 +1,17 @@
 soundManager.setup({
 	url: '/renders/soundmaster/swf',
+	flashVersion: 9,
+	useHighPerformance: true,
+	wmode: 'transparent',
+	debugMode: false,
 	onready: function() {
 		soundManager.createSound({
 			id: 'sms',
-			url: '/assets/sms.mp3'
+			autoLoad: true,
+			url: '/assets/sms.mp3',
+			multiShot: true,
+			volume: 100
 		});
-		soundManager.play('sms');
-		alert('init soundmaster');
 	},
 	ontimeout: function() {
 		alert('can not init soundmaster');
