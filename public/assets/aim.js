@@ -1,5 +1,3 @@
-var panValue = xlsf.soundPan.panValue; // eg. +/- 80%
-this.pan = parseInt(this.x <= xlsf.soundPan.mid ? -panValue + ((this.x / xlsf.soundPan.mid) * panValue) : (this.x - xlsf.soundPan.mid) / (xlsf.soundPan.right - xlsf.soundPan.mid) * panValue);
 soundManager.setup({
 	url: '/renders/soundmaster/swf',
 	flashVersion: 9,
