@@ -1,5 +1,5 @@
 soundManager.setup({
-	url: '/assets/soundmaster/swf/',
+	url: '/renders/soundmaster/swf/',
 	onready: function() {
 		soundManager.createSound({
 			id: 'sms',
