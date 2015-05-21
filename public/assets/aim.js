@@ -1,27 +1,19 @@
+soundManager.setup({
+	url: '/assets/soundmaster/swf/',
+	onready: function() {
+		soundManager.createSound({
+			id: 'sms',
+			url: '/assets/sms.mp3'
+		});
+	}
+});
 var reminder = {
 	_step: 0,
 	_title: document.title,
 	_timer: null,
 	_active: false,
-	_audio: null,
 	sound: function(){	
-		if(!reminder._audio){
-			var a = document.createElement('audio');
-			if(!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''))){
-				reminder._audio = $("audio")[0];
-				reminder._type = 1;
-			}else{ 
-				reminder._audio = 'shit';
-				reminder._type = 0;
-			} 
-		}
-		if(reminder._type == 1){
-			reminder._audio.play();
-		}
-		else{
-			$("embed").remove();
-			$("body").append("<embed src='/assets/sms.mp3' autostart=true hidden=true loop=false>");
-		}
+		soundManager.play('sms');
 	},
 	begin:function(){
 		if(!reminder._active){
