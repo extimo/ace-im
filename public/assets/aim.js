@@ -10,7 +10,9 @@ soundManager.setup({
 			autoLoad: true,
 			url: '/assets/sms.mp3',
 			multiShot: true,
-			onfinish:function(){alert('finish')}
+			onfinish:function(){alert('finish')},
+			onload:function(){alert('load')},
+			onplay:function(){alert('play')}
 		});
 	},
 	ontimeout: function() {
