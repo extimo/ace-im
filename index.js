@@ -14,7 +14,9 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function() {
 
 var messages = {};
 
-io.sockets.on('connection', function(socket){	
+io.sockets.on('connection', function(socket){
+	var user = null;
+	var room = null;
 	socket.on('getAllMessages', function(room){
 		if(!messages[room]){
 			messages[room] = [];
@@ -30,6 +32,16 @@ io.sockets.on('connection', function(socket){
 			messages[data.room] = messages[data.room].slice(300);
 		}
 		io.sockets.emit('messageAdded', data);
+	});
+	socket.on('userOnline', function(data){
+		user = data.user;
+		room = data.room
+		var msg = {content: user + ' now online.', createAt: new Date(), from: 'SYSTEM'};
+		io.sockets.emit('messageAdded', {room: data.room, message: msg});
+	});
+	socket.on('disconnect', function(){
+		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
+		io.sockets.emit('messageAdded', {room: data.room, message: msg});
 	});
 });
 

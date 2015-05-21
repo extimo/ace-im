@@ -3,21 +3,20 @@ var reminder = {
 	_title: document.title,
 	_timer: null,
 	_active: false,
+	_audio: null,
 	sound: function(){	
-		if(!reminder.audioElm){
+		if(!reminder._audio){
 			var a = document.createElement('audio');
 			if(!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''))){
-				reminder.audioElm = document.createElement('audio');
-				reminder.audioElm.src = '/assets/sms.mp3';
-				document.body.appendChild(reminder.audioElm);
+				reminder._audio = $("audio")[0];
 				reminder._type = 1;
 			}else{ 
-				reminder.audioElm = 'shit';
+				reminder._audio = 'shit';
 				reminder._type = 0;
 			} 
 		}
 		if(reminder._type == 1){
-			reminder.audioElm.play();
+			reminder._audio.play();
 		}
 		else{
 			$("embed").remove();
@@ -93,16 +92,18 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 });
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
+	$scope.share = {};
+	$scope.share.me = $.cookie('aim_nickname_room' + room) ? $.cookie('aim_nickname_room' + room) : 'someone';
 	$scope.help = {
-		content: 'tips:\nsend /clear to clear history.\n' + 
+		content: 'hello, ' + $scope.share.me + '! here\'s some tips:\nsend /clear to clear history.\n' + 
 			'send /set {name} to apply a new nickname.\nsend /help to show reminder message again', 
 		from: 'SYSTEM'
 	};
-	$scope.share = {
-		messages: [$scope.help], 
-		me: $.cookie('aim_nickname_room' + room) ? $.cookie('aim_nickname_room' + room) : 'someone'
-	};
+	$scope.share.messages = [$scope.help];
+	
+	socket.emit('userOnline', {room: room, user: $scope.share.me});
 	socket.emit('getAllMessages', room);
+		
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = $scope.share.messages.concat(messages);
 	});
