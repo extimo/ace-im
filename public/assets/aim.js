@@ -12,7 +12,8 @@ soundManager.setup({
 			multiShot: true,
 			onfinish:function(){alert('finish')},
 			onload:function(){alert('load')},
-			onplay:function(){alert('play')}
+			onplay:function(){alert('play')},
+			stream: false
 		});
 	},
 	ontimeout: function() {
