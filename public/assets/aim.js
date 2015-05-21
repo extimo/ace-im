@@ -5,6 +5,9 @@ soundManager.setup({
 			id: 'sms',
 			url: '/assets/sms.mp3'
 		});
+	},
+	ontimeout: function() {
+		alert('can not init soundmaster');
 	}
 });
 var reminder = {

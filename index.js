@@ -41,7 +41,7 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('disconnect', function(){
 		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
-		io.sockets.emit('messageAdded', {room: data.room, message: msg});
+		io.sockets.emit('messageAdded', {room: room, message: msg});
 	});
 });
 
