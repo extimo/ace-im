@@ -15,6 +15,7 @@ soundManager.setup({
 			onplay:function(){alert('play')},
 			stream: false
 		});
+		soundManager.getSoundById('sms').load();
 	},
 	ontimeout: function() {
 		alert('can not init soundmaster');
