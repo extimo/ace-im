@@ -3,7 +3,7 @@ soundManager.setup({
 	flashVersion: 9,
 	useHighPerformance: true,
 	wmode: 'transparent',
-	debugMode: false,
+	debugMode: true,
 	onready: function() {
 		soundManager.createSound({
 			id: 'sms',
