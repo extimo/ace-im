@@ -1,10 +1,12 @@
 soundManager.setup({
-	url: '/renders/soundmaster/swf/',
+	url: '/renders/soundmaster/swf',
 	onready: function() {
 		soundManager.createSound({
 			id: 'sms',
 			url: '/assets/sms.mp3'
 		});
+		soundManager.play('sms');
+		alert('init soundmaster');
 	},
 	ontimeout: function() {
 		alert('can not init soundmaster');
