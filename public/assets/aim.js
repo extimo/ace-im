@@ -9,10 +9,7 @@ soundManager.setup({
 			id: 'sms',
 			autoLoad: true,
 			url: '/assets/sms.mp3',
-			multiShot: true,
-			onfinish:function(){alert('finish')},
-			onload:function(){alert('load')},
-			onplay:function(){alert('play')}
+			multiShot: true
 		});
 		soundManager.getSoundById('sms').load();
 	},
