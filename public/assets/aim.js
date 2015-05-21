@@ -1,3 +1,5 @@
+var panValue = xlsf.soundPan.panValue; // eg. +/- 80%
+this.pan = parseInt(this.x <= xlsf.soundPan.mid ? -panValue + ((this.x / xlsf.soundPan.mid) * panValue) : (this.x - xlsf.soundPan.mid) / (xlsf.soundPan.right - xlsf.soundPan.mid) * panValue);
 soundManager.setup({
 	url: '/renders/soundmaster/swf',
 	flashVersion: 9,
@@ -10,7 +12,7 @@ soundManager.setup({
 			autoLoad: true,
 			url: '/assets/sms.mp3',
 			multiShot: true,
-			volume: 100
+			onfinish:function(){alert('finish')}
 		});
 	},
 	ontimeout: function() {
