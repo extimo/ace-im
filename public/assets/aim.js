@@ -128,6 +128,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.on('pong', function(sig){
 		if($scope.sig != sig){
 			socket.emit('getAllMessages', room);
+			$scope.sig = sig;
 		}
 	})
 });
