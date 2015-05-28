@@ -73,7 +73,7 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 	var socket = io.connect('/');
 		
 	setInterval(function(){
-		socket.emit('getAllMessages', room);
+		socket.emit('ping');
 	}, 1000 * 60);
 	
 	return {
@@ -107,6 +107,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		from: 'SYSTEM'
 	};
 	$scope.share.messages = [$scope.help];
+	$scope.sig = null;
 	
 	socket.emit('userOnline', {room: room, user: $scope.share.me});
 		
@@ -124,6 +125,11 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 			}
 		}
 	});
+	socket.on('pong', function(sig){
+		if($scope.sig != sig){
+			socket.emit('getAllMessages', room);
+		}
+	})
 });
 
 angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socket){
