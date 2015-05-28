@@ -18,15 +18,9 @@ io.sockets.on('connection', function(socket){
 	var user = null;
 	var room = null;
 	socket.on('getAllMessages', function(room){
-		if(!messages[room]){
-			messages[room] = [];
-		}
 		socket.emit('allMessages', messages[room]);
 	});
 	socket.on('createMessage', function(data){
-		if(!messages[data.room]){
-			messages[data.room] = [];
-		}
 		messages[data.room].push(data.message);
 		if(messages[data.room].length > 500){
 			messages[data.room] = messages[data.room].slice(300);
@@ -35,12 +29,18 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('userOnline', function(data){
 		user = data.user;
-		room = data.room
+		room = data.room;
 		var msg = {content: user + ' now online.', createAt: new Date(), from: 'SYSTEM'};
-		io.sockets.emit('messageAdded', {room: data.room, message: msg});
+		if(!messages[room]){
+			messages[room] = [];
+		}
+		socket.emit('allMessages', messages[room]);
+		messages[room].push(msg);
+		io.sockets.emit('messageAdded', {room: room, message: msg});
 	});
 	socket.on('disconnect', function(){
 		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
+		messages[room].push(msg);
 		io.sockets.emit('messageAdded', {room: room, message: msg});
 	});
 });
