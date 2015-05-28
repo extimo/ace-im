@@ -18,6 +18,9 @@ io.sockets.on('connection', function(socket){
 	var user = null;
 	var room = null;
 	socket.on('getAllMessages', function(room){
+		if(!messages[room]){
+			messages[room] = [];
+		}
 		socket.emit('allMessages', messages[room]);
 	});
 	socket.on('createMessage', function(data){
@@ -40,6 +43,9 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('disconnect', function(){
 		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
+		if(!messages[room]){
+			messages[room] = [];
+		}
 		messages[room].push(msg);
 		io.sockets.emit('messageAdded', {room: room, message: msg});
 	});
