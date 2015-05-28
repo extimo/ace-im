@@ -71,6 +71,11 @@ angular.module('AIMApp', ['angularMoment']);
 
 angular.module('AIMApp').factory('socket', function($rootScope){
 	var socket = io.connect('/');
+		
+	setInterval(function(){
+		socket.emit('getAllMessages', room);
+	}, 1000 * 60);
+	
 	return {
 		on: function(eventName, callback){
 			socket.on(eventName, function(){
