@@ -112,7 +112,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.emit('getAllMessages', room);
 		
 	socket.on('allMessages', function(messages){
-		$scope.share.messages = $scope.share.messages.concat(messages);
+		$scope.share.messages = [$scope.help].concat(messages);
 	});
 	socket.on('messageAdded', function(data){
 		if(data.room == room){
