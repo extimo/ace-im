@@ -44,16 +44,11 @@ io.sockets.on('connection', function(socket){
 			messages[room] = [];
 		}
 		socket.emit('allMessages', messages[room]);
-		messages[room].push(msg);
 		io.sockets.emit('messageAdded', {room: room, message: msg});
 	});
 	socket.on('disconnect', function(){
 		sig = new Date().getTime();
 		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
-		if(!messages[room]){
-			messages[room] = [];
-		}
-		messages[room].push(msg);
 		io.sockets.emit('messageAdded', {room: room, message: msg});
 	});
 });
