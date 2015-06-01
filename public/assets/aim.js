@@ -114,20 +114,18 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = [$scope.help].concat(messages);
 	});
-	socket.on('messageAdded', function(data){
-		if(data.room == room){
-			$scope.share.messages.push(data.message);
-			if(data.message.from != $scope.share.me &&data.message.from != "SYSTEM" && !in_view){
-				reminder.begin();
-			}
-			if(data.message.from != $scope.share.me){
-				reminder.sound();
-			}
+	socket.on('messageAdded', function(msg){
+		$scope.share.messages.push(msg);
+		if(msg.from != $scope.share.me && msg.from != "SYSTEM" && !in_view){
+			reminder.begin();
+		}
+		if(msg.from != $scope.share.me){
+			reminder.sound();
 		}
 	});
 	socket.on('pong', function(sig){
 		if($scope.sig != sig){
-			socket.emit('getAllMessages', room);
+			socket.emit('getAllMessages');
 			$scope.sig = sig;
 		}
 	})
@@ -151,20 +149,21 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		}
 		if($scope.newMessage.indexOf('/set') == 0){
 			var sps = $scope.newMessage.split(" ", 2);
+			var newName = sps[1];
 			$scope.newMessage = '';	
-			if(sps[1].toUpperCase() == "SYSTEM"){
-				$scope.share.messages.push({content: 'resricted name: ' + sps[1], from: 'SYSTEM', createAt: new Date()});
+			if(newName.toUpperCase() == "SYSTEM"){
+				$scope.share.messages.push({content: 'resricted name: ' + newName, from: 'SYSTEM', createAt: new Date()});
 				return;
 			}
-			socket.emit('createMessage', {room: room, message: 
-				{content: $scope.share.me + ' changes nick to ' + sps[1], from: 'SYSTEM', createAt: new Date()}});
-			$scope.share.me = sps[1];
-			$.cookie('aim_nickname_room' + room, sps[1], { expires: 1000 });
+			socket.emit('changeName', newName);
+			$scope.share.me = newName;
+			$.cookie('aim_nickname_room' + room, newName, { expires: 1000 });
 			return;
 		}
 		
 		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
-		socket.emit('createMessage', {room: room, message: msg});
+		$scope.share.messages.push(msg);
+		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
 	};
 });
@@ -194,7 +193,7 @@ angular.module('AIMApp').directive('ctrlEnterBreakLine', function(){
 				ctrlDown = true;
 				setTimeout(function(){
 					ctrlDown = false;
-				}, 1000);
+				}, 300);
 			}
 			if(evt.which == 13){
 				if(ctrlDown){

@@ -18,22 +18,20 @@ io.sockets.on('connection', function(socket){
 	var user = null;
 	var room = null;
 	var sig = new Date().getTime();
-	socket.on('getAllMessages', function(room){
-		if(!messages[room]){
-			messages[room] = [];
-		}
+	
+	socket.on('getAllMessages', function(){
 		socket.emit('allMessages', messages[room]);
 	});
 	socket.on('ping', function(){
 		socket.emit('pong', sig);
 	});
-	socket.on('createMessage', function(data){
+	socket.on('createMessage', function(msg){
 		sig = new Date().getTime();
-		messages[data.room].push(data.message);
-		if(messages[data.room].length > 500){
-			messages[data.room] = messages[data.room].slice(300);
+		messages[room].push(msg);
+		if(messages[room].length > 500){
+			messages[room] = messages[room].slice(300);
 		}
-		io.sockets.emit('messageAdded', data);
+		socket.in(room).broadcast.emit('messageAdded', msg);
 	});
 	socket.on('userOnline', function(data){
 		sig = new Date().getTime();
@@ -43,13 +41,20 @@ io.sockets.on('connection', function(socket){
 		if(!messages[room]){
 			messages[room] = [];
 		}
+		socket.join(room);
 		socket.emit('allMessages', messages[room]);
-		io.sockets.emit('messageAdded', {room: room, message: msg});
+		socket.in(room).broadcast.emit('messageAdded', msg);
 	});
 	socket.on('disconnect', function(){
 		sig = new Date().getTime();
 		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
-		io.sockets.emit('messageAdded', {room: room, message: msg});
+		socket.in(room).broadcast.emit('messageAdded', msg);
+	});
+	socket.on('changeName', function(newName){
+		sig = new Date().getTime();
+		var msg = {content: user + ' changes nick to ' + newName, from: 'SYSTEM', createAt: new Date()}});
+		socket.in(room).broadcast.emit('messageAdded', msg);
+		user = newName;
 	});
 });
 
