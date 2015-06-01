@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="/renders/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/renders/emoji.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -17,6 +18,7 @@
       <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script src="/socket.io/socket.io.js"></script>
+    <link href="/assets/room.css" rel="stylesheet">
     <link href="/assets/room.css" rel="stylesheet">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -64,5 +66,11 @@
 	  </div>
 	</div>
     <script src="/assets/aim.js"></script>
+    <script src="/renders/emoji.js"></script>
+    <script src="/renders/jquery.emoji.js"></script>
+	<script>
+		emoji.img_path = '/renders/emoji-data/unicode/';
+		emoji.init_env();
+	</script>
   </body>
 </html>

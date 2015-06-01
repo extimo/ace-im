@@ -112,9 +112,13 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.emit('userOnline', {room: room, user: $scope.share.me});
 		
 	socket.on('allMessages', function(messages){
+		messages = messages.map(function(msg){
+			msg.content = emoji.replace_colons(msg.content);
+		});
 		$scope.share.messages = [$scope.help].concat(messages);
 	});
 	socket.on('messageAdded', function(msg){
+		msg.content = emoji.replace_colons(msg.content);
 		$scope.share.messages.push(msg);
 		if(msg.from != $scope.share.me && msg.from != "SYSTEM" && !in_view){
 			reminder.begin();
