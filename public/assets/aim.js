@@ -215,13 +215,9 @@ angular.module('AIMApp').directive('ctrlEnterBreakLine', function(){
 
 function doEmoji(){
 	setTimeout(function() {
-		emoji();
+		$(".un").each(function(i, e){
+			$(e).html(emoji.replace_colons($(e).html()));
+			$(e).removeClass("un");
+		});
 	}, 100);
-}
-
-function emoji(){
-	$(".un").each(function(i, e){
-		$(e).html(emoji.replace_colons($(e).html()));
-		$(e).removeClass("un");
-	});
 }
