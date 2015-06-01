@@ -213,10 +213,9 @@ angular.module('AIMApp').directive('ctrlEnterBreakLine', function(){
 angular.module('AIMApp').directive('convertEmoji', function() {
 	return {
 		restrict: 'AE',
-		template: '{{message.content}}',
+		template: '',
 		link: function(scope, elem, attrs) {
-			elem.html(emoji.replace_colons(elem.html()) + 'converted');
-			alert(elem.html());
+			elem.html(emoji.replace_colons(scope.message.content + 'converted'));
 		}
 	};
 });
