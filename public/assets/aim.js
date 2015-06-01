@@ -215,7 +215,7 @@ angular.module('AIMApp').directive('ctrlEnterBreakLine', function(){
 
 function doEmoji(){
 	$(".un").each(function(i, e){
-		e.html(emoji.replace_colons(e.html()));
-		e.removeClass("un");
+		$(e).html(emoji.replace_colons($(e).html()));
+		$(e).removeClass("un");
 	});
 }
