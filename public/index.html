@@ -51,7 +51,7 @@
 			<div class="messages list-group ng-cloak" auto-scroll-to-bottom ng-cloak>
 			  <div class="list-group-item message" ng-repeat="message in share.messages track by $index">
 			    <p><kbd>{{message.from}}:</kbd><span am-time-ago="message.createAt" class="pull-right"></span></p>
-				<pre>{{message.content}}</pre>
+				<pre class="un">{{message.content}}</pre>
 			  </div>
 			</div>
 			<form class="message-creator" ng-controller="MessageCreatorCtrl">
