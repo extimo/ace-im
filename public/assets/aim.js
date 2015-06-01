@@ -113,6 +113,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		
 	socket.on('allMessages', function(messages){
 		$scope.share.messages = [$scope.help].concat(messages);
+		doEmoji();
 	});
 	socket.on('messageAdded', function(msg){
 		$scope.share.messages.push(msg);
@@ -122,6 +123,7 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		if(msg.from != $scope.share.me){
 			reminder.sound();
 		}
+		doEmoji();
 	});
 	socket.on('pong', function(sig){
 		if($scope.sig != sig){
@@ -165,6 +167,7 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		$scope.share.messages.push(msg);
 		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
+		doEmoji();
 	};
 });
 
@@ -211,7 +214,7 @@ angular.module('AIMApp').directive('ctrlEnterBreakLine', function(){
 });
 
 function doEmoji(){
-	$(".un").each(function(e){
+	$(".un").each(function(i, e){
 		e.html(emoji.replace_colons(e.html()));
 		e.removeClass("un");
 	});
