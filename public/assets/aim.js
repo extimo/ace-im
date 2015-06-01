@@ -215,7 +215,7 @@ angular.module('AIMApp').directive('convertEmoji', function() {
 		restrict: 'AE',
 		template: '',
 		link: function(scope, elem, attrs) {
-			elem.html(emoji.replace_colons(scope.message.content + 'converted'));
+			elem.html(emoji.replace_colons(scope.message.content));
 		}
 	};
 });
