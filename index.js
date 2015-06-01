@@ -31,10 +31,9 @@ io.sockets.on('connection', function(socket){
 		if(messages[room].length > 500){
 			messages[room] = messages[room].slice(300);
 		}
-		socket.in(room).broadcast.emit('messageAdded', msg);
+		io.broadcast.to(room).emit('messageAdded', msg);
 	});
 	socket.on('userOnline', function(data){
-		sig = new Date().getTime();
 		user = data.user;
 		room = data.room;
 		var msg = {content: user + ' now online.', createAt: new Date(), from: 'SYSTEM'};
@@ -43,17 +42,15 @@ io.sockets.on('connection', function(socket){
 		}
 		socket.join(room);
 		socket.emit('allMessages', messages[room]);
-		socket.in(room).broadcast.emit('messageAdded', msg);
+		io.broadcast.to(room).emit('messageAdded', msg);
 	});
 	socket.on('disconnect', function(){
-		sig = new Date().getTime();
 		var msg = {content: user + ' now offline.', createAt: new Date(), from: 'SYSTEM'};
-		socket.in(room).broadcast.emit('messageAdded', msg);
+		io.broadcast.to(room).emit('messageAdded', msg);
 	});
 	socket.on('changeName', function(newName){
-		sig = new Date().getTime();
 		var msg = {content: user + ' changes nick to ' + newName, from: 'SYSTEM', createAt: new Date()};
-		socket.in(room).broadcast.emit('messageAdded', msg);
+		io.broadcast.to(room).emit('messageAdded', msg);
 		user = newName;
 	});
 });

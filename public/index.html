@@ -47,7 +47,7 @@
 			<h3 class="panel-title">Ace IM</h3>
 		  </div>
 		  <div class="panel-body room-content">
-			<div class="messages list-group" auto-scroll-to-bottom>
+			<div class="messages list-group ng-cloak" auto-scroll-to-bottom ng-cloak>
 			  <div class="list-group-item message" ng-repeat="message in share.messages track by $index">
 			    <p><kbd>{{message.from}}:</kbd><span am-time-ago="message.createAt" class="pull-right"></span></p>
 				<pre>{{message.content}}</pre>
