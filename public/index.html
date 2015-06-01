@@ -19,14 +19,13 @@
     <![endif]-->
     <script src="/socket.io/socket.io.js"></script>
     <link href="/assets/room.css" rel="stylesheet">
-	<link href="http://cdn.staticfile.org/emoji/0.2.2/emoji.css" rel="stylesheet" type="text/css" />
-	
+    <link href="/renders/emoji.css" rel="stylesheet">
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/renders/jquery/dist/jquery.min.js"></script>
     <script src="/renders/jquery/dist/jquery.cookie.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/renders/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="/renders/iNotify.js"></script>
     <script src="/renders/angular/angular.min.js"></script>
     <script src="/renders/moment/moment.js"></script>
     <script src="/renders/angular-moment/angular-moment.min.js"></script>
@@ -66,6 +65,10 @@
 	  </div>
 	</div>
     <script src="/assets/aim.js"></script>
-	<script src="http://cdn.staticfile.org/emoji/0.2.2/emoji.js"></script>
+    <script src="/renders/emoji.js"></script>
+    <script src="/renders/jquery.emoji.js"></script>
+	<script>
+		emoji.img_path = '/renders/emoji-data/unicode/';
+	</script>
   </body>
 </html>
