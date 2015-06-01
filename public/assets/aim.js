@@ -166,6 +166,7 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		}
 		
 		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
+		msg.content = emoji.replace_colons(msg.content);
 		$scope.share.messages.push(msg);
 		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
