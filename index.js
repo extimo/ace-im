@@ -52,7 +52,7 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('changeName', function(newName){
 		sig = new Date().getTime();
-		var msg = {content: user + ' changes nick to ' + newName, from: 'SYSTEM', createAt: new Date()}});
+		var msg = {content: user + ' changes nick to ' + newName, from: 'SYSTEM', createAt: new Date()};
 		socket.in(room).broadcast.emit('messageAdded', msg);
 		user = newName;
 	});
