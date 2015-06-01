@@ -112,10 +112,14 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.emit('userOnline', {room: room, user: $scope.share.me});
 		
 	socket.on('allMessages', function(messages){
+		messages = messages.map(function(msg){
+			msg.content = emoji.replace_colons(msg.content);
+			return msg;
+		});
 		$scope.share.messages = [$scope.help].concat(messages);
-		doEmoji();
 	});
 	socket.on('messageAdded', function(msg){
+		msg.content = emoji.replace_colons(msg.content);
 		$scope.share.messages.push(msg);
 		if(msg.from != $scope.share.me && msg.from != "SYSTEM" && !in_view){
 			reminder.begin();
@@ -123,7 +127,6 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 		if(msg.from != $scope.share.me){
 			reminder.sound();
 		}
-		doEmoji();
 	});
 	socket.on('pong', function(sig){
 		if($scope.sig != sig){
@@ -164,10 +167,10 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 		}
 		
 		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
+		msg.content = emoji.replace_colons(msg.content);
 		$scope.share.messages.push(msg);
 		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
-		doEmoji();
 	};
 });
 
@@ -212,12 +215,3 @@ angular.module('AIMApp').directive('ctrlEnterBreakLine', function(){
 		});
 	};
 });
-
-function doEmoji(){
-	setTimeout(function() {
-		$(".un").each(function(i, e){
-			$(e).html(emoji.replace_colons($(e).html()));
-			$(e).removeClass("un");
-		});
-	}, 100);
-}
