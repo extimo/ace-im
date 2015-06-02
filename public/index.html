@@ -75,9 +75,9 @@
 			<form class="message-creator col-xs-12" ng-controller="MessageCreatorCtrl">
 			  <div class="form-group">
 				<div class="input-group">
-					<div class="input-group-btn">
+					<div class="input-group-btn dropup">
 						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">to {{share.target.nick}} </button>
-						<ul class="dropdown-menu dropup" role="menu">
+						<ul class="dropdown-menu" role="menu">
 						  <li><a ng-click="sendTo(share.all)" href="javascript:;" >all</a></li>
 						  <li class="divider" ng-if="share.users.length > 1"></li>
 						  <li ng-repeat="user in share.users track by user.id">
@@ -118,9 +118,9 @@
 		<form class="message-creator col-xs-12" ng-controller="MessageCreatorCtrl">
 		  <div class="form-group">
 			<div class="input-group">
-				<div class="input-group-btn">
+				<div class="input-group-btn dropup">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">to {{share.target.nick}} </button>
-					<ul class="dropdown-menu dropup" role="menu">
+					<ul class="dropdown-menu" role="menu">
 					  <li><a ng-click="sendTo(share.all)" href="javascript:;" >all</a></li>
 					  <li class="divider" ng-if="share.users.length > 1"></li>
 					  <li ng-repeat="user in share.users track by user.id">
