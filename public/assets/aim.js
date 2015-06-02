@@ -59,7 +59,13 @@ $("body").mouseleave(function(){
 	in_view = false;
 });
 $(window).resize(function(){
-	var h = parseInt($("html").height()) - 240 - parseInt($(".navbar").height()) - parseInt($(".panel-heading").height());
+	var h = 0;
+	if($("html").width() < 992){
+		h = parseInt($("html").height()) - 100;
+	}
+	else{
+		h = parseInt($("html").height()) - 180 - parseInt($(".navbar").height()) - parseInt($(".panel-heading").height());
+	}
 	$(".messages").height(h);
 	$(".messages").css("max-height", h);
 	$(".messages").css("min-height", h);
@@ -100,26 +106,35 @@ angular.module('AIMApp').factory('socket', function($rootScope){
 
 angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	$scope.share = {};
-	$scope.share.me = $.cookie('aim_nickname_room' + room) ? $.cookie('aim_nickname_room' + room) : 'someone';
+	$scope.share.me = {};
+	$scope.share.me.nick = $.cookie('aim_nickname_room' + room) ? $.cookie('aim_nickname_room' + room) : 'someone';
 	$scope.help = {
-		content: 'hello, ' + $scope.share.me + '! here\'s some tips:\nsend /clear to clear history.\n' + 
+		content: 'hello, ' + $scope.share.me.nick + '! here\'s some tips:\nsend /clear to clear history.\n' + 
 			'send /set {name} to apply a new nickname.\nsend /help to show reminder message again', 
-		from: 'SYSTEM'
+		from: {nick: 'SYSTEM', id: 'SYSTEM'}
 	};
 	$scope.share.messages = [$scope.help];
 	$scope.sig = null;
+	$scope.share.all = {nick: "all", id: room};
+	$scope.share.target = $scope.share.all;
+	$scope.share.users = [$scope.share.me];
 	
-	socket.emit('userOnline', {room: room, user: $scope.share.me});
-		
-	socket.on('allMessages', function(messages){
-		$scope.share.messages = [$scope.help].concat(messages);
+	socket.emit('join', {room: room, user: $scope.share.me.nick});
+	
+	socket.on('userId', function(id){
+		$scope.share.me.id = id;
 	});
-	socket.on('messageAdded', function(msg){
-		$scope.share.messages.push(msg);
-		if(msg.from != $scope.share.me && msg.from != "SYSTEM" && !in_view){
+	socket.on('allMessages', function(data){
+		$scope.sig = data.sig;
+		$scope.share.messages = [$scope.help].concat(data.messages);
+	});
+	socket.on('messageAdded', function(data){
+		$scope.sig = data.sig;
+		$scope.share.messages.push(data.message);
+		if(data.message.from.id != $scope.share.me.id && data.message.from.id != "SYSTEM" && !in_view){
 			reminder.begin();
 		}
-		if(msg.from != $scope.share.me){
+		if(data.message.from.id != $scope.share.me.id){
 			reminder.sound();
 		}
 	});
@@ -128,7 +143,16 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 			socket.emit('getAllMessages');
 			$scope.sig = sig;
 		}
-	})
+	});
+	socket.on('allUsers', function(users){
+		$scope.share.users = users;
+	});
+	
+	$scope.sendTo = function(user){
+		if(user.id != $scope.share.me.id){
+			$scope.share.target = user;
+		}
+	};
 });
 
 angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socket){
@@ -152,7 +176,11 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			var newName = sps[1];
 			$scope.newMessage = '';	
 			if(newName.toUpperCase() == "SYSTEM"){
-				$scope.share.messages.push({content: 'resricted name: ' + newName, from: 'SYSTEM', createAt: new Date()});
+				$scope.share.messages.push({
+					content: 'resricted name: ' + newName, 
+					from: {nick: 'SYSTEM', id: 'SYSTEM'}, 
+					createAt: new Date()
+				});
 				return;
 			}
 			socket.emit('changeName', newName);
@@ -161,7 +189,12 @@ angular.module('AIMApp').controller('MessageCreatorCtrl', function($scope, socke
 			return;
 		}
 		
-		var msg = {content: $scope.newMessage, createAt: new Date(), from: $scope.share.me};
+		var msg = {
+			content: $scope.newMessage, 
+			createAt: new Date(), 
+			from: $scope.share.me, 
+			to: $scope.share.target
+		};
 		$scope.share.messages.push(msg);
 		socket.emit('createMessage', msg);
 		$scope.newMessage = '';
