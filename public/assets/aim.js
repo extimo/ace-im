@@ -124,24 +124,16 @@ angular.module('AIMApp').controller('RoomCtrl', function($scope, socket){
 	socket.on('userId', function(id){
 		$scope.share.me.id = id;
 	});
-	socket.on('allMessages', function(data){
-		$scope.sig = data.sig;
-		$scope.share.messages = [$scope.help].concat(data.messages);
+	socket.on('allMessages', function(messages){
+		$scope.share.messages = [$scope.help].concat(messages);
 	});
-	socket.on('messageAdded', function(data){
-		$scope.sig = data.sig;
-		$scope.share.messages.push(data.message);
-		if(data.message.from.id != $scope.share.me.id && data.message.from.id != "SYSTEM" && !in_view){
+	socket.on('messageAdded', function(message){
+		$scope.share.messages.push(message);
+		if(message.from.id != $scope.share.me.id && message.from.id != "SYSTEM" && !in_view){
 			reminder.begin();
 		}
-		if(data.message.from.id != $scope.share.me.id){
+		if(message.from.id != $scope.share.me.id){
 			reminder.sound();
-		}
-	});
-	socket.on('pong', function(sig){
-		if($scope.sig != sig){
-			socket.emit('getAllMessages');
-			$scope.sig = sig;
 		}
 	});
 	socket.on('allUsers', function(users){
