@@ -60,11 +60,13 @@ io.sockets.on('connection', function(socket){
 			createAt: new Date(), 
 			from: {nick: 'SYSTEM', id: 'SYSTEM'}
 		};
-		currentUsers[room] = currentUsers[room].filter(function(u){
-			return user.id != u.id;
-		});
+		if(currentUsers[room]){
+			currentUsers[room] = currentUsers[room].filter(function(u){
+				return user.id != u.id;
+			});
+			socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
+		}
 		socket.broadcast.to(room).emit('messageAdded', msg);
-		socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 	});
 	socket.on('changeName', function(newName){
 		var msg = {
@@ -74,11 +76,13 @@ io.sockets.on('connection', function(socket){
 		};
 		socket.broadcast.to(room).emit('messageAdded', msg);
 		user.nick = newName;
-		currentUsers[room] = currentUsers[room].filter(function(u){
-			return user.id != u.id;
-		});
-		currentUsers[room].push(user);
-		socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
+		if(currentUsers[room]){
+			currentUsers[room] = currentUsers[room].filter(function(u){
+				return user.id != u.id;
+			});
+			currentUsers[room].push(user);
+			socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
+		}
 	});
 });
 
