@@ -13,7 +13,7 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function() {
 }));
 
 var messages = {};
-var currentUsers = [];
+var currentUsers = {};
 
 io.sockets.on('connection', function(socket){
 	var user = {};
@@ -44,12 +44,15 @@ io.sockets.on('connection', function(socket){
 		if(!messages[room]){
 			messages[room] = [];
 		}
+		if(!currentUsers[room]){
+			currentUsers[room] = [];
+		}
 		socket.join(room);
 		socket.emit('allMessages', messages[room]);
 		socket.emit('userId', user.id);
-		socket.emit('allUsers', currentUsers);
+		socket.emit('allUsers', currentUsers[room]);
 		socket.broadcast.to(room).emit('messageAdded', msg);
-		socket.broadcast.to(room).emit('allUsers', currentUsers);
+		socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 	});
 	socket.on('disconnect', function(){
 		var msg = {
@@ -57,11 +60,11 @@ io.sockets.on('connection', function(socket){
 			createAt: new Date(), 
 			from: {nick: 'SYSTEM', id: 'SYSTEM'}
 		};
-		currentUsers = currentUsers.filter(function(u){
+		currentUsers[room] = currentUsers[room].filter(function(u){
 			return user.id != u.id;
 		});
 		socket.broadcast.to(room).emit('messageAdded', msg);
-		socket.broadcast.to(room).emit('allUsers', currentUsers);
+		socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 	});
 	socket.on('changeName', function(newName){
 		var msg = {
@@ -71,11 +74,11 @@ io.sockets.on('connection', function(socket){
 		};
 		socket.broadcast.to(room).emit('messageAdded', msg);
 		user.nick = newName;
-		currentUsers = currentUsers.filter(function(u){
+		currentUsers[room] = currentUsers[room].filter(function(u){
 			return user.id != u.id;
 		});
-		currentUsers.push(user);
-		socket.broadcast.to(room).emit('allUsers', currentUsers);
+		currentUsers[room].push(user);
+		socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 	});
 });
 
