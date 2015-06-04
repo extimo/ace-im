@@ -35,7 +35,6 @@ io.sockets.on('connection', function(socket){
 		user.id = socket.id;
 		user.nick = data.user;
 		room = data.room;
-		currentUsers.push(user);
 		var msg = {
 			content: user.nick + ' now online.', 
 			createAt: new Date(), 
@@ -47,6 +46,7 @@ io.sockets.on('connection', function(socket){
 		if(!currentUsers[room]){
 			currentUsers[room] = [];
 		}
+		currentUsers[room].push(user);
 		socket.join(room);
 		socket.emit('allMessages', messages[room]);
 		socket.emit('userId', user.id);
