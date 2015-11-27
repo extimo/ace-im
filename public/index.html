@@ -1,144 +1,50 @@
 <!DOCTYPE html>
 <html lang="zh-CN" ng-app="AIMApp">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>Ace IM</title>
 
-    <!-- Bootstrap -->
-    <link href="/renders/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/renders/emoji.css" rel="stylesheet">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>Ace IM</title>
+	<base href="/">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+	<!-- Bootstrap -->
+	<link href="lib/bootstrap.min.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="lib/html5shiv.min.js"></script>
+		<script src="lib/respond.min.js"></script>
     <![endif]-->
-    <script src="/socket.io/socket.io.js"></script>
-    <link href="/assets/room.css" rel="stylesheet">
-    <link href="/renders/emoji.css" rel="stylesheet">
+	<link href="lib/font-awesome.min.css" rel="stylesheet">
+	<link href="lib/emoji.css" rel="stylesheet">
+	<link href="app/room.css" rel="stylesheet">
+</head>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="/renders/jquery/dist/jquery.min.js"></script>
-    <script src="/renders/jquery/dist/jquery.cookie.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/renders/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/renders/angular/angular.min.js"></script>
-    <script src="/renders/moment/moment.js"></script>
-    <script src="/renders/angular-moment/angular-moment.min.js"></script>
-	<script src="/renders/soundmaster/soundmaster.min.js"></script>
-  </head>
-  <body>
-  	<nav class="navbar navbar-inverse navbar-static-top hidden-xs hidden-sm">
-	  <div class="container">
-		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">Ace IM</a>
-		</div>
-	  </div>
-	</nav>
-	<div style="min-height: 10px"></div>
-	<div class="container-fluid" ng-controller="RoomCtrl">
-	  <div class="col-md-2 hidden-sm hidden-xs col-md-offset-1">
-		<div class="list-group">
-			<p class="list-group-item list-group-item-info">Users</p>
-			<a class="list-group-item" ng-click="sendTo(user)" 
-				href="javascript:;" ng-class="{'list-group-item-success': share.me.id == user.id}"
-				ng-repeat="user in share.users track by user.id">{{user.nick}}</a>
-		</div>
-	  </div>
-	  <div class="col-md-8 hidden-xs hidden-sm">
-		<div class="panel panel-default room">
-		  <div class="panel-heading room-header">
-			<h3 class="panel-title">Dialog</h3>
-		  </div>
-		  <div class="panel-body room-content">
-			<div class="messages list-group ng-cloak" auto-scroll-to-bottom ng-cloak>
-			  <div class="list-group-item bubble" 
-				ng-class="{'bubble-left': message.from.id != share.me.id, 
-					'bubble-right': message.from.id == share.me.id, 
-					'private': message.to.id == share.me.id || 
-						(message.to.id != share.all.id && message.from.id == share.me.id)}" 
-				ng-repeat="message in share.messages track by $index">
-				<p>
-					<span class="label label-default" ng-class="{'pull-right': message.from == share.me}">
-						{{message.from.nick}}
-						<span ng-if="message.to.id == share.me.id">says privately</span>
-					</span>
-					<span am-time-ago="message.createAt" 
-						ng-class="{'pull-right': message.from != share.me}"></span>
-				</p>
-				<pre x-convert-emoji ng-class="{'text-right': message.from == share.me}"></pre>
-			  </div>
-			</div>
-			<form class="message-creator col-xs-12" ng-controller="MessageCreatorCtrl">
-			  <div class="form-group">
-				<div class="input-group">
-					<div class="input-group-btn dropup">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">to {{share.target.nick}} </button>
-						<ul class="dropdown-menu" role="menu">
-						  <li><a ng-click="sendTo(share.all)" href="javascript:;" >all</a></li>
-						  <li class="divider" ng-if="share.users.length > 1"></li>
-						  <li ng-repeat="user in share.users track by user.id">
-							<a ng-click="sendTo(user)" href="javascript:;" ng-if="share.me.id != user.id">{{user.nick}}</a>
-						  </li>
-						</ul>
-					</div>
-					<input type="text" class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Enter to quick send">
-					<span class="input-group-btn">
-						<button type="submit" class="btn btn-block btn-primary" ng-click="createMessage()">send</button>
-					</span>
-				</div>
-			  </div>
-			</form>
-		  </div>
-		</div>
-	  </div>
-	  
-	  <div class="hidden-md hidden-lg">
-		<div class="messages list-group ng-cloak" auto-scroll-to-bottom ng-cloak>
-		  <div class="list-group-item bubble" 
-			ng-class="{'bubble-left': message.from.id != share.me.id, 
-				'bubble-right': message.from.id == share.me.id, 
-				'private': message.to.id == share.me.id}" 
-			ng-repeat="message in share.messages track by $index">
-			<p>
-				<span class="label label-default" ng-class="{'pull-right': message.from == share.me}">
-					{{message.from.nick}}
-					<span ng-if="message.to.id == share.me.id">says privately</span>
-				</span>
-				<span am-time-ago="message.createAt" 
-					ng-class="{'pull-right': message.from != share.me}"></span>
-			</p>
-			<pre x-convert-emoji ng-class="{'text-right': message.from == share.me}"></pre>
-		  </div>
-		</div>
-		<hr>
-		<form class="message-creator col-xs-12" ng-controller="MessageCreatorCtrl">
-		  <div class="form-group">
-			<div class="input-group">
-				<div class="input-group-btn dropup">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">to {{share.target.nick}} </button>
-					<ul class="dropdown-menu" role="menu">
-					  <li><a ng-click="sendTo(share.all)" href="javascript:;" >all</a></li>
-					  <li class="divider" ng-if="share.users.length > 1"></li>
-					  <li ng-repeat="user in share.users track by user.id">
-						<a ng-click="sendTo(user)" href="javascript:;" ng-if="share.me.id != user.id">{{user.nick}}</a>
-					  </li>
-					</ul>
-				</div>
-				<input type="text" class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Enter to quick send">
-				<span class="input-group-btn">
-					<button type="submit" class="btn btn-block btn-primary" ng-click="createMessage()">send</button>
-				</span>
-			</div>
-		  </div>
-		</form>
-	</div>
-    <script src="/assets/aim.js"></script>
-    <script src="/renders/emoji.js"></script>
-    <script src="/renders/jquery.emoji.js"></script>
-  </body>
+<body>
+	<ng-include src="'room.html'" ng-if="user"></ng-include>
+	<ng-include src="'account.html'" ng-if="!user"></ng-include>
+	<script src="/socket.io/socket.io.js"></script>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="lib/jquery-1.11.3.min.js"></script>
+	<script src="lib/jquery.cookie.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="lib/bootstrap.min.js"></script>
+	<script src="lib/angular.min.js"></script>
+	<script src="lib/moment.min.js"></script>
+	<script src="lib/angular-moment.min.js"></script>
+	<script src="lib/soundmaster.min.js"></script>
+	<script src="lib/emoji.js"></script>
+	<script src="lib/jquery.emoji.js"></script>
+	<script src="lib/jquery.ba-resize.min.js"></script>
+	<script src="lib/hamster.js"></script>
+	<script src="lib/mousewheel.js"></script>
+	<script src="app/init.js"></script>
+	<script src="app/malarkey.js"></script>
+	<script src="app/aim.js"></script>
+	<script src="app/account.js"></script>
+</body>
+
 </html>

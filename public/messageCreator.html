@@ -1,0 +1,22 @@
+<form class="message-creator col-xs-12" ng-controller="MessageCreatorCtrl">
+	<div class="form-group">
+		<div class="input-group">
+			<div class="input-group-btn dropup" ng-if="base.users.length > 2">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+					to {{base.target ? base.target.name : 'all'}}
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a ng-click="sendTo(base.all)" href="javascript:;">all</a></li>
+					<li class="divider"></li>
+					<li ng-repeat="user in base.users track by user.id">
+						<a ng-click="sendTo(user)" href="javascript:;" ng-if="base.me.id != user.id" ng-bind="user.name"></a>
+					</li>
+				</ul>
+			</div>
+			<input type="text" class="form-control message-input" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Enter to quick send">
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-block btn-primary" ng-click="createMessage()">send</button>
+			</span>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,22 @@
+<table width="100%" height="80%">
+	<tr>
+		<td align="center" valign="middle">
+			<div class="container text-center" ng-controller="AccountCtrl">
+				<h2 welcome next="showUserInput()" ng-if="state.showWelcome" class="blink-cursor enabled"></h2>
+				<input type="text" class="line-input h2" ng-if="state.showInputUsername" ng-model="$parent.info.name"
+				ng-keyup="$event.keyCode == 13 ? checkExist() : void(0);" focus-me autocomplete="off">
+				<h2 hint-not-exist next="showACInput()" ng-if="state.showHintNotExist" class="blink-cursor enabled"></h2>
+				<h2 hint-invalid next="showACInput()" ng-if="state.showHintInvalid" class="blink-cursor enabled"></h2>
+				<input type="text" class="line-input h2" ng-if="state.showInputAC"  ng-model="$parent.actCode"
+				ng-keyup="$event.keyCode == 13 || $parent.actCode.length == 29 ? validate() : void(0)" focus-me autocomplete="off">
+				<h2 hint-register next="showPasswordInput()" ng-if="state.showHintRegister" class="blink-cursor enabled"></h2>
+				<h2 hint-login next="showPasswordInput()" ng-if="state.showHintLogin" class="blink-cursor enabled"></h2>
+				<h2 hint-login-failed next="showPasswordInput()" ng-if="state.showHintLoginFailed" class="blink-cursor enabled"></h2>
+				<h2 hint-register-failed next="showPasswordInput()" ng-if="state.showHintRegisterFailed" class="blink-cursor enabled"></h2>
+				<input type="password" class="line-input h2" ng-if="state.showInputPassword"  ng-model="$parent.info.pass"
+				ng-keyup="$event.keyCode == 13 ? ((state.showHintLogin || state.showHintLoginFailed) ? login() : register()) : void(0)" focus-me autocomplete="off">
+				<h2 ng-if="state.showActionIndicator"><i class="fa fa-spin fa-spinner"></i> <type-me data-text="just a moment..."></type-me></h2>
+			</div>
+		</td>
+	</tr>
+</table>

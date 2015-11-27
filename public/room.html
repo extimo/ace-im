@@ -1,0 +1,50 @@
+<nav class="navbar navbar-inverse navbar-static-top hidden-xs hidden-sm">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="javascript:void(0)">Ace IM</a>
+		</div>
+		
+		<ul class="nav navbar-nav navbar-right">
+			
+			<li class="dropdown">
+				<a href="javascript:void(0)" class="dropdown-toggle ng-cloak" data-toggle="dropdown" role="button">
+					{{user.name}} <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="javascript:void(0)">Prefrences</a></li>
+					<li><a href="javascript:void(0)" ng-click="switch()">Switch User</a></li>
+					<li><a href="javascript:void(0)" ng-click="logoff()">Logoff</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav>
+<div class="container-fluid" ng-controller="RoomCtrl">
+	<div class="col-md-2 hidden-sm hidden-xs col-md-offset-1">
+		<div class="list-group">
+			<p class="list-group-item list-group-item-info">Users</p>
+			<a class="list-group-item" href="javascript:void(0)" ng-click="sendTo(user)" 
+				ng-class="{'list-group-item-success': base.me.id == user.id}"
+				ng-repeat="user in base.users track by user.id"
+				ng-bind="user.name"></a>
+		</div>
+	</div>
+	<div class="col-md-8 hidden-xs hidden-sm" onresize="$(window).resize();">
+		<div class="panel panel-default room">
+			<div class="panel-heading room-header">
+				<h3 class="panel-title">Dialog</h3>
+			</div>
+			<div class="panel-body room-content">
+				<message-list></message-list>
+				<message-creator></message-creator>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hidden-md hidden-lg" onresize="$(window).resize();">
+		<div style="min-height:10px"></div>
+		<message-list></message-list>
+		<hr>
+		<message-creator></message-creator>
+	</div>
+</div>

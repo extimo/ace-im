@@ -1,0 +1,32 @@
+<div class="messages list-group ng-cloak" auto-scroll-to-bottom msd-wheel="onMousewheel($delta, $event.target.scrollTop)" pull-action="onPull()">
+	<div class="list-group-item" ng-if="base.fetching">
+		<i class="fa fa-spin fa-spinner"></i> <span type-me data-text="fetching messages..."></span>
+	</div>
+	<div style="min-height:10px" ng-if="base.fetching"></div>
+	<div class="list-group-item bubble bubble-left">
+		<p>
+			<span class="label label-default">
+				SYSTEM
+			</span>
+		</p>
+		<pre type-me data-text="{{help}}"></pre>
+	</div>
+	<div class="list-group-item bubble" ng-repeat="message in base.messages track by $index"
+		ng-class="{'bubble-left text-left': message.from.id != base.me.id, 
+			'bubble-right text-right': message.from.id == base.me.id, 
+			'private': message.to && (message.to.id == base.me.id || message.from.id == base.me.id)}"
+	>
+		<p>
+			<span class="label label-default" ng-class="{'pull-right': message.from.id == base.me.id}">
+				{{message.from.name}}
+				<span ng-if="message.to.id == base.me.id"> says privately</span>
+			</span>
+			<acronym class="time-span" ng-if="!base.showTime && message.createAt" am-time-ago="message.createAt" title="{{message.createAt}}"></acronym>
+			<span ng-if="message.ts">
+				<i class="fa fa-spin fa-spinner"></i>
+			</span>
+		</p>
+		<pre x-convert-emoji>{{ message.content }}</pre>
+		<span class="scroll-to-me" ng-if="message.scroll"></span>
+	</div>
+</div>
