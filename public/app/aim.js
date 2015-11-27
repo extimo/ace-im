@@ -259,7 +259,8 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	
 	$rootScope.switch = function(){
 		$.cookie('aim_switching', 'true');
-		$rootScope.user = null;
+		// $rootScope.user = null;
+		socket.close();
 	};
 	
 	$rootScope.logoff = function(){
