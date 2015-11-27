@@ -32,8 +32,10 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			});
 		},
 		create: function(token, callback){
-			socket = io.connect('/', {
-				query: 'token=' + token
+			socket = io('/', {
+				query: 'token=' + token,
+				multiplex: false,
+				reconnection: false
 			});
 			socket.on("error", function(error) {
 				if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
@@ -43,10 +45,12 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 				}
 			});
 			socket.on('disconnect', function(){
-				socket = io.connect('/', {
-					query: 'token=' + token
-				});
+				$rootScope.user = null;
+					console.log('disconnected');
 			})
+		},
+		close: function(){
+			socket.io.disconnect();
 		}
 	}
 })
@@ -260,6 +264,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	
 	$rootScope.logoff = function(){
 		$.removeCookie('aim_user_' + $rootScope.user.name + '@' + $rootScope.user.ns);
-		$rootScope.user = null;
+		// $rootScope.user = null;
+		socket.close();
 	}
 });

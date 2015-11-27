@@ -109,7 +109,9 @@ function handle(io) {
 			socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 			socket.broadcast.to(room).emit('messageAdded', msg);
 			if (Object.keys(currentUsers[room]).length === 0) {
-				saveMessage(room, messages[room]);
+				if(messages[room].length > 0){
+					saveMessage(room, messages[room]);
+				}
 				messages[room] = [];
 				clearInterval(handleSave);
 				handleSave = null;
