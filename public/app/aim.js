@@ -192,13 +192,33 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		compile: function compile(tElement, tAttrs) {
 			return function postLink(scope, iElement, iAttrs) {
 				var scrollElement = iElement.parent();
+				// var ptrElement = window.ptr = iElement.children()[0];
 
 				iElement.bind('touchmove', function (ev) {
 					var top = scrollElement[0].scrollTop;
 					if (top < -60) {
 						scope.pullAction();
+						alert('work');
 					}
 				});
+
+				// iElement.bind('touchend', function (ev) {
+				// 	if (!shouldReload) return;
+				// 	ptrElement.style.webkitTransitionDuration = 0;
+				// 	ptrElement.style.margin = '0 auto';
+				// 	setStatus('loading');
+
+				// 	var start = +new Date();
+				// 	$q.when(scope.$eval(iAttrs.pullToRefresh))
+				// 		.then(function () {
+				// 			var elapsed = +new Date() - start;
+				// 			$timeout(function () {
+				// 				ptrElement.style.margin = '';
+				// 				ptrElement.style.webkitTransitionDuration = '';
+				// 				scope.status = 'pull';
+				// 			}, elapsed < config.debounce ? config.debounce - elapsed : 0);
+				// 		});
+				// });
 
 				scope.$on('$destroy', function () {
 					iElement.unbind('touchmove');
