@@ -22,7 +22,7 @@ var fetchMessage = function(room, begin, len, cb){
 				return done();
 			}
 			
-			messages.find({}).skip(stats.count - begin - len).limit(len).toArray(function(err, docs){
+			messages.find({}).skip(Math.max(0, stats.count - begin - len)).limit(len).toArray(function(err, docs){
 				if(err){
 					cb([]);
 				}
