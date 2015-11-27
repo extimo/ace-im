@@ -64,33 +64,26 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	$scope.base.users = [$scope.base.me];
 	
 	$scope.onMousewheel = function(delta, top){
+		if($scope.base.fetching) return;
 		if(delta > 0 && top === 0){
 			$scope.wheelCount = $scope.wheelCount || 0;
 			$scope.wheelCount++;
-			if($scope.wheelCount == 10 && !$scope.base.fetching){
-				$scope.base.fetching = true;
+			if($scope.wheelCount == 10){
 				$scope.wheelCount = 0;
-				socket.emit('fetchMessages', {
-					begin: $scope.base.end,
-					len: 20
-				});
+				$scope.fetchMore();
 			}
 		}
 		else{
 			$scope.wheelCount = 0;
 		}
 	};
-	$scope.onPull = function(){
-		$scope.pullCount = $scope.pullCount || 0;
-		$scope.pullCount++;
-		if($scope.pullCount == 3 && !$scope.base.fetching){
-			$scope.base.fetching = true;
-			$scope.pullCount = 0;
-			socket.emit('fetchMessages', {
-				begin: $scope.base.end,
-				len: 20
-			});
-		}
+	
+	$scope.fetchMore = function(){
+		$scope.base.fetching = true;
+		socket.emit('fetchMessages', {
+			begin: $scope.base.end,
+			len: 20
+		});
 	}
 	
 	socket.on('appendMessages', function(messages){
@@ -180,50 +173,6 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 					scrollTop: element.prop('scrollHeight')
 				}, 1000);
 			});
-		}
-	};
-})
-.directive('pullAction', function ($timeout, $q) {
-	return {
-		scope: {
-			'pullAction': '&'
-		},
-		restrict: 'A',
-		compile: function compile(tElement, tAttrs) {
-			return function postLink(scope, iElement, iAttrs) {
-				var scrollElement = iElement.parent();
-				// var ptrElement = window.ptr = iElement.children()[0];
-
-				iElement.bind('touchmove', function (ev) {
-					var top = scrollElement[0].scrollTop;
-					if (top < -60) {
-						scope.pullAction();
-						alert('work');
-					}
-				});
-
-				// iElement.bind('touchend', function (ev) {
-				// 	if (!shouldReload) return;
-				// 	ptrElement.style.webkitTransitionDuration = 0;
-				// 	ptrElement.style.margin = '0 auto';
-				// 	setStatus('loading');
-
-				// 	var start = +new Date();
-				// 	$q.when(scope.$eval(iAttrs.pullToRefresh))
-				// 		.then(function () {
-				// 			var elapsed = +new Date() - start;
-				// 			$timeout(function () {
-				// 				ptrElement.style.margin = '';
-				// 				ptrElement.style.webkitTransitionDuration = '';
-				// 				scope.status = 'pull';
-				// 			}, elapsed < config.debounce ? config.debounce - elapsed : 0);
-				// 		});
-				// });
-
-				scope.$on('$destroy', function () {
-					iElement.unbind('touchmove');
-				});
-			};
 		}
 	};
 })

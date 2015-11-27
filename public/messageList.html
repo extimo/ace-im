@@ -1,7 +1,11 @@
-<div class="messages list-group ng-cloak" auto-scroll-to-bottom msd-wheel="onMousewheel($delta, $event.target.scrollTop)" pull-action="onPull()">
+<div class="messages list-group ng-cloak" auto-scroll-to-bottom msd-wheel="onMousewheel($delta, $event.target.scrollTop)">
 	<div class="list-group-item" ng-if="base.fetching">
 		<i class="fa fa-spin fa-spinner"></i> <span type-me data-text="fetching messages..."></span>
 	</div>
+	<div class="list-group-item text-center hidden-md hidden-lg" ng-if="!base.fetching" ng-click="fetchMore()">
+		<i class="fa fa-"></i> load more chat history
+	</div>
+	<div style="min-height:10px" class="hidden-md hidden-lg" ng-if="!base.fetching"></div>
 	<div style="min-height:10px" ng-if="base.fetching"></div>
 	<div class="list-group-item bubble bubble-left">
 		<p>

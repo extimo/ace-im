@@ -20,7 +20,7 @@
 	</div>
 </nav>
 <div class="container-fluid" ng-controller="RoomCtrl">
-	<div class="col-md-2 hidden-sm hidden-xs col-md-offset-1">
+	<div class="col-lg-2 hidden-sm hidden-xs hidden-md col-lg-offset-1">
 		<div class="list-group">
 			<p class="list-group-item list-group-item-info">Users</p>
 			<a class="list-group-item" href="javascript:void(0)" ng-click="sendTo(user)" 
@@ -29,7 +29,8 @@
 				ng-bind="user.name"></a>
 		</div>
 	</div>
-	<div class="col-md-8 hidden-xs hidden-sm" onresize="$(window).resize();">
+	<div class="col-md-1 visible-md"></div>
+	<div class="col-lg-8 col-md-10 hidden-xs hidden-sm" onresize="$(window).resize();">
 		<div class="panel panel-default room">
 			<div class="panel-heading room-header">
 				<h3 class="panel-title">Dialog</h3>
