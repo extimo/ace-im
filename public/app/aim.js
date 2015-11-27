@@ -50,7 +50,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		}
 	}
 })
-.controller('RoomCtrl', function($scope, socket){
+.controller('RoomCtrl', function($scope, $timeout, socket){
 	$scope.help = 'hello, ' + $scope.user.name + '! here\'s some tips:\nsend /clear to clear history.\n' + 
 			'send /help to show reminder message again';
 	$scope.base = {
@@ -93,7 +93,9 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		$scope.base.end += messages.length;
 		if($scope.base.firstFetch){
 			$scope.base.firstFetch = false;
-			$scope.$broadcast('scrollToBottom');
+			$timeout(function(){
+				$scope.$broadcast('scrollToBottom');
+			}, 100);
 		}
 	});
 	socket.on('allUsers', function(users){
@@ -107,7 +109,9 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		if(message.from.id != $scope.base.me.id){
 			reminder.sound();
 		}
-		$scope.$broadcast('scrollToBottom');
+		$timeout(function(){
+			$scope.$broadcast('scrollToBottom');
+		}, 100);
 	});
 	socket.on('messageCreated', function(ts, message){
 		$scope.base.messages = $scope.base.messages.map(function(msg){
@@ -124,7 +128,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		}
 	};
 })
-.controller('MessageCreatorCtrl', function($scope, socket){
+.controller('MessageCreatorCtrl', function($scope, $timeout, socket){
 	$scope.newMessage = '';
 	$scope.createMessage = function(){
 		if($scope.newMessage == ''){
@@ -150,7 +154,9 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		socket.emit('createMessage', msg);
 		$scope.base.messages.push(msg);
 		$scope.newMessage = '';
-		$scope.$broadcast('scrollToBottom');
+		$timeout(function(){
+			$scope.$broadcast('scrollToBottom');
+		}, 100);
 	};
 })
 .directive('autoScrollToBottom', function(){

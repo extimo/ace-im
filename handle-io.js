@@ -35,6 +35,8 @@ var fetchMessage = function(room, begin, len, cb){
 	});
 }
 
+var handleSave = null;
+		
 function handle(io) {
 	io.use(socketioJwt.authorize({
 		secret: appSecret,
@@ -65,6 +67,15 @@ function handle(io) {
 			createAt: new Date(),
 			from: { name: 'SYSTEM'}
 		});
+	
+		if(!handleSave){
+			handleSave = setInterval(function(){
+				if(messages[room].length > 0){
+					saveMessage(room, messages[room]);
+				}
+				messages[room] = [];
+			}, 60000);
+		}
 
 		socket.on('fetchMessages', function (range) {
 			fetchMessage(room, range.begin, range.len, function(data){
@@ -79,10 +90,6 @@ function handle(io) {
 			var ts = msg.ts;
 			delete msg.ts;
 			messages[room].push(msg);
-			if (messages[room].length > 100) {
-				saveMessage(room, messages[room]);
-				messages[room] = [];
-			}
 			if (!msg.to) {
 				socket.broadcast.to(room).emit('messageAdded', msg);
 			}
@@ -101,9 +108,11 @@ function handle(io) {
 			delete currentUsers[room][user.id];
 			socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 			socket.broadcast.to(room).emit('messageAdded', msg);
-			if (Object.keys(currentUsers[room]).length === 0 && messages[room].length !== 0) {
+			if (Object.keys(currentUsers[room]).length === 0) {
 				saveMessage(room, messages[room]);
 				messages[room] = [];
+				clearInterval(handleSave);
+				handleSave = null;
 			}
 		});
 	});
