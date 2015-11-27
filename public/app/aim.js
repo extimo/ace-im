@@ -59,7 +59,8 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			id: $scope.user.id
 		},
 		fetching: true,
-		firstFetch: true
+		firstFetch: true,
+		messages: []
 	};
 	$scope.base.users = [$scope.base.me];
 	
