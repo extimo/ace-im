@@ -81,7 +81,8 @@ function handle(io) {
 
 		socket.on('fetchMessages', function (range) {
 			if(range.begin > pos) return socket.emit('appendMessages', []);
-			fetchMessage(room, pos - range.begin, range.len, function(data){
+			var len = Math.max(range.len, pos - range.begin);
+			fetchMessage(room, pos - range.begin, len, function(data){
 				socket.emit('appendMessages', data.filter(function(msg){
 					return !msg.to || msg.to.id == user.id || msg.from.id == user.id;
 				}));

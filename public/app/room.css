@@ -161,7 +161,7 @@ html, body{
 
 pre{
   margin: 0;
-  font-size: 16px;
+  font-size: 1em;
 }
 
 @-moz-keyframes cursor-blink {
