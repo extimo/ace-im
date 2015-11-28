@@ -34,7 +34,7 @@ var getCount = function(room, cb){
 		if(!db) return cb(-1);
 		var messages = db.collection('messages_' + room);
 		messages.stats(function (err, stats) {
-			if(err){
+			if(err || !stats){
 				cb(-1);
 			}
 			cb(stats.count);
