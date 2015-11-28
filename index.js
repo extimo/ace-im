@@ -5,7 +5,7 @@ if (cluster.isMaster) {
 		cluster.fork();
 	});
 }
-if (cluster.isWorker) {
+else {
 	var express = require('express');
 	var bodyParser = require('body-parser');
 	var app = express();
@@ -34,4 +34,5 @@ if (cluster.isWorker) {
 		console.log(err);
 		process.exit(1);
 	});
+	
 }
