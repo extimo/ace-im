@@ -27,6 +27,9 @@
 				ng-class="{'list-group-item-success': base.me.id == user.id}"
 				ng-repeat="user in base.users track by user.id"
 				ng-bind="user.name"></a>
+			<a class="list-group-item" ng-if="base.users.length === 0">
+				<i class="fa fa-spin fa-spinner"></i>
+			</a>
 		</div>
 	</div>
 	<div class="col-md-1 visible-md"></div>

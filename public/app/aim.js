@@ -39,18 +39,22 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			});
 			socket.on("error", function(error) {
 				if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
-					$rootScope.user = null;
+					$timeout(function(){
+						$rootScope.user = null;
+					});
 					console.log('sock err');
-					console.log(error);
 				}
 			});
 			socket.on('disconnect', function(){
-				$rootScope.user = null;
-					console.log('disconnected');
+				$timeout(function () {
+					$rootScope.user = null;
+				});
+				console.log('disconnected');
 			})
 		},
 		close: function(){
 			socket.io.disconnect();
+			socket = null;
 		}
 	}
 })
@@ -62,14 +66,16 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			name: $scope.user.name,
 			id: $scope.user.id
 		},
+		fetchLen: 5,
+		canFetch: true,
 		fetching: true,
 		firstFetch: true,
-		messages: []
+		messages: [],
+		users: []
 	};
-	$scope.base.users = [$scope.base.me];
 	
 	$scope.onMousewheel = function(delta, top){
-		if($scope.base.fetching) return;
+		if(!$scope.base.canFetch || $scope.base.fetching) return;
 		if(delta > 0 && top === 0){
 			$scope.wheelCount = $scope.wheelCount || 0;
 			$scope.wheelCount++;
@@ -87,15 +93,26 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		$scope.base.fetching = true;
 		socket.emit('fetchMessages', {
 			begin: $scope.base.end,
-			len: 20
+			len: $scope.base.fetchLen
 		});
 	}
+	
+	// initial fetch(5 records)
+	$scope.fetchMore();
+	$scope.base.fetchLen = 20;
 	
 	socket.on('appendMessages', function(messages){
 		$scope.base.messages = messages.concat($scope.base.messages || []);
 		$scope.base.fetching = false;
 		$scope.base.end = $scope.base.end || 0;
 		$scope.base.end += messages.length;
+		if(messages.length == 0){
+			$scope.base.fetchEnd = true;
+			$scope.base.canFetch = false;
+			$timeout(function(){
+				$scope.base.fetchEnd = false;
+			}, 3000);
+		}
 		if($scope.base.firstFetch){
 			$scope.base.firstFetch = false;
 			$timeout(function(){

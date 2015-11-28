@@ -22,6 +22,11 @@ var fetchMessage = function(room, begin, len, cb){
 				return done();
 			}
 			
+			if(begin >= stats.count){
+				cb([]);
+				return done();
+			}
+			
 			messages.find({}).skip(Math.max(0, stats.count - begin - len)).limit(len).toArray(function(err, docs){
 				if(err){
 					cb([]);
@@ -55,11 +60,6 @@ function handle(io) {
 		messages[room] = messages[room] || [];
 		currentUsers[room] = currentUsers[room] || {};
 		currentUsers[room][user.id] = user;
-		fetchMessage(room, 0, 5, function(data){
-			socket.emit('appendMessages', data.filter(function(msg){
-				return !msg.to || msg.to.id == user.id;
-			}));
-		});
 		socket.emit('allUsers', currentUsers[room]);
 		socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 		socket.broadcast.to(room).emit('messageAdded', {

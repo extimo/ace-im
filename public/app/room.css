@@ -81,6 +81,10 @@ html, body{
   padding-right: 10px;
 }
 
+pre{
+  margin: 0;
+}
+
 @-moz-keyframes cursor-blink {
   1% {
     opacity: 0;
