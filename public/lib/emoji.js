@@ -11,7 +11,7 @@ function emoji(){}
 	 * @memberof emoji
 	 * @type {string}
 	 */
-	emoji.img_set = 'emojione';
+	emoji.img_set = 'apple';
 
 	/**
 	 * Configuration details for different image sets. This includes a path to a directory containing the

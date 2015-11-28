@@ -9,9 +9,11 @@ var saveMessage = function(room){
 	if(messages[room].length === 0) return;
 	$(function(db, done){
 		if(!db) return;
-		db.collection('messages_' + room).insertMany(messages[room], done);
+		db.collection('messages_' + room).insertMany(messages[room], function(err){	
+			if(!err) messages[room] = [];
+			done()
+		});
 	});
-	messages[room] = [];
 }
 
 var fetchMessage = function(room, skip, len, cb){
