@@ -24,6 +24,14 @@
 </head>
 
 <body>
+	<table width="100%" height="90%" remove-me>
+		<tr>
+			<td align="center" valign="middle">
+				<h1 class="hidden">loading...</h1>
+				<i class="fa fa-spin fa-spinner fa-4x"></i>
+			</td>
+		</tr>
+	</table>
 	<ng-include src="'room.html'" ng-if="user"></ng-include>
 	<ng-include src="'account.html'" ng-if="!user"></ng-include>
 	<script src="/socket.io/socket.io.js"></script>

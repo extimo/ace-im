@@ -60,7 +60,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 })
 .controller('RoomCtrl', function($scope, $timeout, socket){
 	$scope.help = 'hello, ' + $scope.user.name + '! here\'s some tips:\nsend /clear to clear history.\n' + 
-			'send /logoff to logoff current user.\nsend /switch to switch to anthor user.';
+			'send /logoff to logoff current user.\nsend /switch to switch to anthor user.\nsend /pref set your preferences.';
 	$scope.base = {
 		me: {
 			name: $scope.user.name,
@@ -70,9 +70,41 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		canFetch: true,
 		fetching: true,
 		firstFetch: true,
+		end: 0,
 		messages: [],
 		users: []
 	};
+	$scope.themes = {
+		default:{
+			message: 'bubble',
+			myMessage: 'bubble-right text-right pull-right',
+			otherMessage: 'bubble-left text-left',
+			systemMessage: 'bubble-system text-left',
+			privateMessage: 'bubble private',
+			username: 'label label-default',
+			showPrivateHint: true,
+			showMessageHeading: true
+		},
+		minimalism:{
+			message: 'bubble minimalism',
+			myMessage: 'bubble-right text-right pull-right',
+			otherMessage: 'bubble-left text-left',
+			systemMessage: 'bubble-system text-left',
+			privateMessage: 'bubble minimalism private'
+		},
+		text:{
+			message: 'text-rect',
+			privateMessage: 'text-rect private',
+			myMessage: 'text-me',
+			systemMessage: 'text-system',
+			username: 'bold',
+			showMessageHeading: true,
+			unifiedMessageHeading: true
+		}
+	};
+	$scope.pref = {
+		theme: 'default'
+	}
 	
 	$scope.onMousewheel = function(delta, top){
 		if(!$scope.base.canFetch || $scope.base.fetching) return;
@@ -104,7 +136,6 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	socket.on('appendMessages', function(messages){
 		$scope.base.messages = messages.concat($scope.base.messages || []);
 		$scope.base.fetching = false;
-		$scope.base.end = $scope.base.end || 0;
 		$scope.base.end += messages.length;
 		if(messages.length == 0){
 			$scope.base.fetchEnd = true;
@@ -174,7 +205,11 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			$scope.switch();
 			return;
 		}
-		
+		if($scope.newMessage == '/pref'){
+			$('#mdlPreferences').modal('show');
+			$scope.newMessage = '';	
+			return;
+		}
 		var msg = {
 			content: $scope.newMessage,
 			from: $scope.base.me, 

@@ -10,33 +10,30 @@
 	</div>
 	<div style="min-height:10px" class="hidden-md hidden-lg" ng-if="base.canFetch && !base.fetching"></div>
 	<div style="min-height:10px" ng-if="base.fetchEnd || base.fetching"></div>
-	<div class="list-group-item bubble bubble-left">
-		<p>
-			<span class="label label-default">
+	<div class="list-group-item" ng-class="[themes[pref.theme].systemMessage, themes[pref.theme].message]">
+		<p ng-if="themes[pref.theme].showMessageHeading">
+			<span ng-class="themes[pref.theme].username">
 				SYSTEM
 			</span>
 		</p>
-		<pre type-me data-text="{{help}}"></pre>
+		<pre type-me data-text="{{help}}" ng-class="themes[pref.theme].content"></pre>
 	</div>
 	<div class="clearfix"></div>
-	<div class="list-group-item bubble" ng-repeat-start="message in base.messages track by $index"
-		ng-class="{'bubble-left text-left': message.from.id != base.me.id, 
-			'bubble-right text-right pull-right': message.from.id == base.me.id, 
-			'private': message.to && (message.to.id == base.me.id || message.from.id == base.me.id)}"
+	<div ng-repeat-start="message in base.messages track by $index" class="list-group-item"
+		ng-class="[themes[pref.theme][message.from.id == base.me.id ? 'myMessage' : message.from.name == 'SYSTEM' ? 'systemMessage' : 'otherMessage'],
+			themes[pref.theme][message.to && (message.to.id == base.me.id || message.from.id == base.me.id) ? 'privateMessage' : 'message']]"
 	>
-		<p>
-			<span class="label label-default" ng-class="{'pull-right': message.from.id == base.me.id}" ng-click="sendTo(message.from)">
+		<p ng-if="themes[pref.theme].showMessageHeading">
+			<span ng-class="[themes[pref.theme].username, {'pull-right': !themes[pref.theme].unifiedMessageHeading && message.from.id == base.me.id}]" ng-click="sendTo(message.from)">
 				{{message.from.name}}
-				<span ng-if="message.to.id == base.me.id"> says privately</span>
+				<span ng-if="themes[pref.theme].showPrivateHint && message.to.id == base.me.id"> says privately</span>
 			</span>
-			<acronym class="time-span" ng-if="!base.showTime && message.createAt" am-time-ago="message.createAt" title="{{message.createAt}}"></acronym>
+			<acronym class="time-span" ng-if="message.createAt" am-time-ago="message.createAt" title="{{message.createAt}}"></acronym>
 			<span ng-if="message.ts">
 				<i class="fa fa-spin fa-spinner"></i>
 			</span>
 		</p>
-		<pre x-convert-emoji>{{ message.content }}</pre>
-		<span class="scroll-to-me" ng-if="message.scroll"></span>
+		<pre x-convert-emoji ng-class="themes[pref.theme].content">{{ message.content }}</pre>
 	</div>
 	<div class="clearfix" ng-repeat-end></div>
 </div>
-//minimalism

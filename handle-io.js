@@ -5,37 +5,40 @@ var currentUsers = {};
 
 var appSecret = "(CY9awb4vy5809ar0srbts90uqc23BY*RYB@)";
 
-var saveMessage = function(room, msg){
+var saveMessage = function(room){
+	if(messages[room].length === 0) return;
 	$(function(db, done){
 		if(!db) return;
-		db.collection('messages_' + room).insertMany(msg, done);
+		db.collection('messages_' + room).insertMany(messages[room], done);
+	});
+	messages[room] = [];
+}
+
+var fetchMessage = function(room, skip, len, cb){
+	$(function(db, done){
+		if(!db) return cb([]);
+		db.collection('messages_' + room).find({}).skip(skip).limit(len).toArray(function(err, docs){
+			if(err){
+				cb([]);
+			}
+			else{
+				cb(docs);
+			}
+			done();
+		});
 	});
 }
 
-var fetchMessage = function(room, begin, len, cb){
+var getCount = function(room, cb){
 	$(function(db, done){
-		if(!db) return cb([]);
+		if(!db) return cb(-1);
 		var messages = db.collection('messages_' + room);
 		messages.stats(function (err, stats) {
 			if(err){
-				cb([]);
-				return done();
+				cb(-1);
 			}
-			
-			if(begin >= stats.count){
-				cb([]);
-				return done();
-			}
-			
-			messages.find({}).skip(Math.max(0, stats.count - begin - len)).limit(len).toArray(function(err, docs){
-				if(err){
-					cb([]);
-				}
-				else{
-					cb(docs);
-				}
-				done();
-			});
+			cb(stats.count);
+			done();
 		});
 	});
 }
@@ -55,6 +58,10 @@ function handle(io) {
 			sock: socket.id
 		};
 		var room = socket.decoded_token.ns;
+		var pos = -1;
+		getCount(room, function(p){
+			pos = p;
+		});
 	
 		socket.join(room);
 		messages[room] = messages[room] || [];
@@ -69,18 +76,14 @@ function handle(io) {
 		});
 	
 		if(!handleSave){
-			handleSave = setInterval(function(){
-				if(messages[room].length > 0){
-					saveMessage(room, messages[room]);
-				}
-				messages[room] = [];
-			}, 60000);
+			handleSave = setInterval(saveMessage.bind(null, room), 60000);
 		}
 
 		socket.on('fetchMessages', function (range) {
-			fetchMessage(room, range.begin, range.len, function(data){
+			if(range.begin > pos) return socket.emit('appendMessages', []);
+			fetchMessage(room, pos - range.begin, range.len, function(data){
 				socket.emit('appendMessages', data.filter(function(msg){
-					return !msg.to || msg.to.id == user.id;
+					return !msg.to || msg.to.id == user.id || msg.from.id == user.id;
 				}));
 			});
 		});
@@ -109,10 +112,7 @@ function handle(io) {
 			socket.broadcast.to(room).emit('allUsers', currentUsers[room]);
 			socket.broadcast.to(room).emit('messageAdded', msg);
 			if (Object.keys(currentUsers[room]).length === 0) {
-				if(messages[room].length > 0){
-					saveMessage(room, messages[room]);
-				}
-				messages[room] = [];
+				saveMessage(room);
 				clearInterval(handleSave);
 				handleSave = null;
 			}
