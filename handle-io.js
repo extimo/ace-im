@@ -58,10 +58,7 @@ function handle(io) {
 			sock: socket.id
 		};
 		var room = socket.decoded_token.ns;
-		var pos = 0;
-		getCount(room, function(p){
-			pos = p;
-		});
+		var pos = null;
 	
 		socket.join(room);
 		messages[room] = messages[room] || [];
@@ -78,15 +75,24 @@ function handle(io) {
 		if(!handleSave){
 			handleSave = setInterval(saveMessage.bind(null, room), 60000);
 		}
-
-		socket.on('fetchMessages', function (range) {
-			if(range.begin > pos) return socket.emit('appendMessages', []);
+		
+		var onFetch = function(range){if(range.begin > pos) return socket.emit('appendMessages', []);
 			var len = Math.max(range.len, pos - range.begin);
 			fetchMessage(room, pos - range.begin, len, function(data){
 				socket.emit('appendMessages', data.filter(function(msg){
 					return !msg.to || msg.to.id == user.id || msg.from.id == user.id;
 				}));
 			});
+		};
+
+		socket.on('fetchMessages', function (range) {
+			if(pos === null){
+				return getCount(room, function(p){
+					pos = p;
+					onFetch(range);
+				});
+			}
+			onFetch(range);
 		});
 		
 		socket.on('createMessage', function (msg) {
