@@ -58,7 +58,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		}
 	}
 })
-.controller('RoomCtrl', function($scope, $timeout, socket){
+.controller('RoomCtrl', function($scope, $timeout, $http, socket){
 	$scope.help = 'hello, ' + $scope.user.name + '! here\'s some tips:\nsend /clear to clear history.\n' + 
 			'send /logoff to logoff current user.\nsend /switch to switch to anthor user.\nsend /pref set your preferences.';
 	$scope.base = {
@@ -102,8 +102,24 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			unifiedMessageHeading: true
 		}
 	};
-	$scope.pref = {
-		theme: 'default'
+	$scope.pref = $scope.user.pref;
+	if(!$scope.pref){
+		try{
+			$scope.pref = JSON.parse($.cookie('aim_pref')) || {
+				theme: 'default'
+			};
+		}
+		catch(e){ }
+	}
+	
+	$scope.savePreferences = function(){
+		$.cookie('aim_pref', JSON.stringify($scope.pref));
+		if($scope.pref.roam){
+			$http.post('/api/savePref', {
+				user: $scope.user,
+				pref: $scope.pref
+			})
+		}
 	}
 	
 	$scope.onMousewheel = function(delta, top){

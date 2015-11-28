@@ -122,5 +122,13 @@ router.post('/register', function (req, res) {
 	});
 });
 
+router.post('/savePref', function (req, res) {
+	$(function (db, done) {
+		if(!db) return;
+		db.collection('users').updateOne({ name: req.body.user.name, ns: req.body.user.ns }, {$set: {pref: req.body.pref}}, done);
+	});
+	res.end();
+});
+
 
 module.exports = router;
