@@ -226,6 +226,13 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			$scope.newMessage = '';	
 			return;
 		}
+		if($scope.newMessage == '/whereami'){
+			$scope.newMessage = $scope.user.ns;
+			$timeout(function(){
+				$scope.newMessage = '';
+			}, 500);
+			return;
+		}
 		var msg = {
 			content: $scope.newMessage,
 			from: $scope.base.me, 
