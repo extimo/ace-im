@@ -7,10 +7,6 @@ html, body{
 	overflow: auto;
 }
 
-.private{
-	background-color: #d9edf7!important;
-}
-
 .bubble{
 	position:relative;
 	background-color:#eee;
@@ -20,6 +16,7 @@ html, body{
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
+  display: inline-block;
 }
 .bubble-left{
 	margin-right:50px;
@@ -51,6 +48,10 @@ html, body{
 	border-top:10px solid transparent;
 }
 
+.private.bubble{
+	background-color: #d9edf7!important;
+}
+
 .private.bubble.bubble-left:before{
 	border-right: 20px solid #d9edf7;
 }
@@ -60,10 +61,10 @@ html, body{
 }
 
 .blink-cursor.enabled:after {
-    -webkit-animation: cursor-blink 0.8s linear infinite;
-    -moz-animation: cursor-blink 0.8s linear infinite;
-    -o-animation: cursor-blink 0.8s linear infinite;
-    animation: cursor-blink 0.8s linear infinite;
+    -webkit-animation: cursor-blink 0.5s linear infinite;
+    -moz-animation: cursor-blink 0.5s linear infinite;
+    -o-animation: cursor-blink 0.5s linear infinite;
+    animation: cursor-blink 0.5s linear infinite;
     content: "|";
     padding-left: 1px;
 }

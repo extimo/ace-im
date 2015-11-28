@@ -330,4 +330,11 @@ angular.module('AIMApp')
 			typist.type(scope.text);
 		}
 	};
+})
+.directive('removeMe', function() {
+	return {
+		link: function(scope, elem, attrs) {
+			elem.remove();
+		}
+	};
 });

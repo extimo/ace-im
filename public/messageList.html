@@ -18,13 +18,14 @@
 		</p>
 		<pre type-me data-text="{{help}}"></pre>
 	</div>
-	<div class="list-group-item bubble" ng-repeat="message in base.messages track by $index"
+	<div class="clearfix"></div>
+	<div class="list-group-item bubble" ng-repeat-start="message in base.messages track by $index"
 		ng-class="{'bubble-left text-left': message.from.id != base.me.id, 
-			'bubble-right text-right': message.from.id == base.me.id, 
+			'bubble-right text-right pull-right': message.from.id == base.me.id, 
 			'private': message.to && (message.to.id == base.me.id || message.from.id == base.me.id)}"
 	>
 		<p>
-			<span class="label label-default" ng-class="{'pull-right': message.from.id == base.me.id}">
+			<span class="label label-default" ng-class="{'pull-right': message.from.id == base.me.id}" ng-click="sendTo(message.from)">
 				{{message.from.name}}
 				<span ng-if="message.to.id == base.me.id"> says privately</span>
 			</span>
@@ -36,4 +37,6 @@
 		<pre x-convert-emoji>{{ message.content }}</pre>
 		<span class="scroll-to-me" ng-if="message.scroll"></span>
 	</div>
+	<div class="clearfix" ng-repeat-end></div>
 </div>
+//minimalism
