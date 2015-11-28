@@ -56,7 +56,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 })
 .controller('RoomCtrl', function($scope, $timeout, socket){
 	$scope.help = 'hello, ' + $scope.user.name + '! here\'s some tips:\nsend /clear to clear history.\n' + 
-			'send /help to show reminder message again';
+			'send /logoff to logoff current user.\nsend /switch to switch to anthor user.';
 	$scope.base = {
 		me: {
 			name: $scope.user.name,
@@ -147,6 +147,14 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		if($scope.newMessage == '/help'){
 			$scope.base.messages.push($scope.help);
 			$scope.newMessage = '';	
+			return;
+		}
+		if($scope.newMessage == '/logoff'){
+			$scope.logoff();
+			return;
+		}
+		if($scope.newMessage == '/switch'){
+			$scope.switch();
 			return;
 		}
 		
@@ -259,13 +267,11 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	
 	$rootScope.switch = function(){
 		$.cookie('aim_switching', 'true');
-		// $rootScope.user = null;
 		socket.close();
 	};
 	
 	$rootScope.logoff = function(){
 		$.removeCookie('aim_user_' + $rootScope.user.name + '@' + $rootScope.user.ns);
-		// $rootScope.user = null;
 		socket.close();
 	}
 });
