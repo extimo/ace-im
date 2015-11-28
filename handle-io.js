@@ -34,10 +34,8 @@ var getCount = function(room, cb){
 		if(!db) return cb(-1);
 		var messages = db.collection('messages_' + room);
 		messages.stats(function (err, stats) {
-			if(err || !stats){
-				cb(-1);
-			}
-			cb(stats.count);
+			if(err || !stats) cb(0);
+			else cb(stats.count);
 			done();
 		});
 	});
@@ -58,7 +56,7 @@ function handle(io) {
 			sock: socket.id
 		};
 		var room = socket.decoded_token.ns;
-		var pos = -1;
+		var pos = 0;
 		getCount(room, function(p){
 			pos = p;
 		});
