@@ -24,11 +24,24 @@ angular.module('AIMApp')
 	savedUsers.forEach(function(user) {
 		savedUsersObj[user.name + "@" + user.ns] = user;
 	}, this);
-	if(!$.cookie('aim_switching') && savedUsers.length == 1){
-		var user = savedUsers[0];
-		
+	if(!$.cookie('aim_switching') && !options.switch && savedUsers.length == 1){
 		$scope.state = { showActionIndicator: true };
-		$http.post('/api/autoLogin', user).success(function(data){
+		$http.post('/api/autoLogin', savedUsers[0]).success(function(data){
+			if(data){
+				$scope.$emit('userLogined', data);
+			}
+			else{
+				$scope.state.showWelcome = true;
+			}
+		}).error(function(){
+			$scope.state.showWelcome = true;
+		}).finally(function(){
+			$scope.state.showActionIndicator = false;
+		});
+	}
+	else if(options.user && savedUsersObj[options.user]){		
+		$scope.state = { showActionIndicator: true };
+		$http.post('/api/autoLogin', savedUsersObj[options.user]).success(function(data){
 			if(data){
 				$scope.$emit('userLogined', data);
 			}

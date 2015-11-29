@@ -72,6 +72,13 @@ $(window).resize(function(){
 	$(".messages").css("max-height", h);
 	$(".messages").css("min-height", h);
 });
+
+var options = window.location.search.slice(1).split('|').reduce(function(opt, str){
+	var arr = str.split('=');
+	opt[arr[0]] = arr[1] || true;
+	return opt;
+}, {});
+
 var rec = function() {
 	if (typeof (returnCitySN) == "undefined") {
 		setTimeout('rec()', 1000);
@@ -79,4 +86,5 @@ var rec = function() {
 	}
 	$.get("http://api.nemoge.com/rec.php?from=chat&ip=" + returnCitySN["cip"] + "&city=" + returnCitySN["cname"]);
 }
-rec();
+
+if(!options.norec) rec();
