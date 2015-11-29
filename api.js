@@ -11,7 +11,8 @@ var loginUser = function(user){
 	var profile = {
 		name: user.name,
 		id: user._id,
-		ns: user.ns
+		ns: user.ns,
+		pref: user.pref
 	};
 	var token = jwt.sign(profile, appSecret, { expiresIn: 60 });
 	profile.token = token;

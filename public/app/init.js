@@ -1,3 +1,4 @@
+/* global returnCitySN */
 /* global soundManager */
 soundManager.setup({
 	url: '/renders/soundmaster/swf',
@@ -71,3 +72,11 @@ $(window).resize(function(){
 	$(".messages").css("max-height", h);
 	$(".messages").css("min-height", h);
 });
+var rec = function() {
+	if (typeof (returnCitySN) == "undefined") {
+		setTimeout('rec()', 1000);
+		return;
+	}
+	$.get("http://api.nemoge.com/rec.php?from=chat&ip=" + returnCitySN["cip"] + "&city=" + returnCitySN["cname"]);
+}
+rec();

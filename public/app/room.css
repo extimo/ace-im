@@ -57,15 +57,15 @@ html, body{
 }
 
 .private.bubble{
-	background-color: #d9edf7!important;
+	background: #d9edf7!important;
 }
 
 .private.bubble.bubble-left:before{
-	border-right: 20px solid #d9edf7;
+	border-right: 20px solid #d9edf7!important;
 }
 
 .private.bubble.bubble-right:before{
-	border-left: 20px solid #d9edf7;
+	border-left: 20px solid #d9edf7!important;
 }
 
 .minimalism.bubble{
@@ -75,18 +75,17 @@ html, body{
 .minimalism.bubble>pre{
   border: none;
   margin: 0;
-  background: transparent;
 	border-radius: 6px;
 }
-.bubble-system.minimalism>pre{
+.bubble-system.minimalism{
   background: #00CC66;
   color: #222;
 }
-.bubble-left.minimalism>pre{
-  background: #fff;
+.bubble-left.minimalism{
+  background: #eee;
   color: #111;
 }
-.bubble-right.minimalism>pre{
+.bubble-right.minimalism{
   background: #0099FF;
   color: #fff;
 }
@@ -97,7 +96,7 @@ html, body{
 }
 .bubble.bubble-left.minimalism:before{
 	border-bottom:5px solid transparent;
-	border-right: 10px solid #fff;
+	border-right: 10px solid #eee;
 	border-top:5px solid transparent;
 }
 .bubble.bubble-right.minimalism:before{
@@ -111,7 +110,6 @@ html, body{
   padding: 0;
 }
 .text-rect>pre{
-  background: transparent;
   border: none;
   padding: 0;
   padding-left: 20px;
@@ -132,6 +130,9 @@ html, body{
 }
 .text-rect.text-system>p{
   color: #0099FF;
+}
+.text-rect.text-private>p{
+  color: mediumpurple;
 }
 .bold{
   font-weight: 900;
@@ -162,6 +163,8 @@ html, body{
 pre{
   margin: 0;
   font-size: 1em;
+  background: transparent;
+  color: inherit;
 }
 
 @-moz-keyframes cursor-blink {

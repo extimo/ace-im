@@ -76,7 +76,8 @@ function handle(io) {
 			handleSave = setInterval(saveMessage.bind(null, room), 60000);
 		}
 		
-		var onFetch = function(range){if(range.begin > pos) return socket.emit('appendMessages', []);
+		var onFetch = function(range){
+			if(range.begin >= pos) return socket.emit('appendMessages', []);
 			var len = Math.min(range.len, pos - range.begin);
 			fetchMessage(room, pos - range.begin - len, len, function(data){
 				socket.emit('appendMessages', data.filter(function(msg){

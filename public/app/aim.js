@@ -60,12 +60,13 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 })
 .controller('RoomCtrl', function($scope, $timeout, $http, socket){
 	$scope.help = 'hello, ' + $scope.user.name + '! here\'s some tips:\nsend /clear to clear history.\n' + 
-			'send /logoff to logoff current user.\nsend /switch to switch to anthor user.\nsend /pref set your preferences.';
+			'send /logoff to logoff current user.\nsend /switch to switch to anthor user.\nsend /pref to set your preferences.';
 	$scope.base = {
 		me: {
 			name: $scope.user.name,
 			id: $scope.user.id
 		},
+		autoScoll: true,
 		fetchLen: 5,
 		canFetch: true,
 		fetching: true,
@@ -106,7 +107,9 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	if(!$scope.pref){
 		try{
 			$scope.pref = JSON.parse($.cookie('aim_pref')) || {
-				theme: 'default'
+				theme: 'default',
+				roam: false,
+				alarm: true
 			};
 		}
 		catch(e){ }
@@ -150,6 +153,14 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	$scope.base.fetchLen = 20;
 	
 	socket.on('appendMessages', function(messages){
+		if($scope.base.firstFetch){
+			$scope.base.firstFetch = false;
+			$scope.base.autoScroll = true;
+			
+			// $timeout(function(){
+			// 	$scope.$broadcast('scrollToBottom');
+			// }, 100);
+		}
 		$scope.base.messages = messages.concat($scope.base.messages || []);
 		$scope.base.fetching = false;
 		$scope.base.end += messages.length;
@@ -160,27 +171,22 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 				$scope.base.fetchEnd = false;
 			}, 3000);
 		}
-		if($scope.base.firstFetch){
-			$scope.base.firstFetch = false;
-			$timeout(function(){
-				$scope.$broadcast('scrollToBottom');
-			}, 100);
-		}
 	});
 	socket.on('allUsers', function(users){
 		$scope.base.users = users;
 	});
 	socket.on('messageAdded', function(message){
+		$scope.base.autoScroll = true;
 		$scope.base.messages.push(message);
 		if(message.from.id != $scope.base.me.id && message.from.name != "SYSTEM" && !in_view){
 			reminder.begin();
 		}
-		if(message.from.id != $scope.base.me.id){
+		if(message.from.id != $scope.base.me.id && $scope.pref.alarm){
 			reminder.sound();
 		}
-		$timeout(function(){
-			$scope.$broadcast('scrollToBottom');
-		}, 100);
+		// $timeout(function(){
+		// 	$scope.$broadcast('scrollToBottom');
+		// }, 100);
 	});
 	socket.on('messageCreated', function(ts, message){
 		$scope.base.messages = $scope.base.messages.map(function(msg){
@@ -233,6 +239,16 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			}, 500);
 			return;
 		}
+		if($scope.newMessage == '/users'){
+			$scope.newMessage = Object.keys($scope.base.users).map(function(key){
+				return $scope.base.users[key].name;
+			});
+			$timeout(function(){
+				$scope.newMessage = '';
+			}, 500);
+			return;
+		}
+		
 		var msg = {
 			content: $scope.newMessage,
 			from: $scope.base.me, 
@@ -240,33 +256,37 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			ts: (new Date()).valueOf()
 		};
 		socket.emit('createMessage', msg);
+		$scope.base.autoScroll = true;
 		$scope.base.messages.push(msg);
 		$scope.newMessage = '';
-		$timeout(function(){
-			$scope.$broadcast('scrollToBottom');
-		}, 100);
+		// $timeout(function(){
+		// 	$scope.$broadcast('scrollToBottom');
+		// }, 300);
 	};
 })
 .directive('autoScrollToBottom', function(){
 	return {
 		link: function(scope, element, attrs){
-			// scope.$watch(
-			// 	function(){
-			// 		return $(".scroll-to-me").length;
-			// 	},
-			// 	function(){
-			// 		if($(".scroll-to-me").get(0)){
-			// 			$(".scroll-to-me").get(0).scrollIntoView();
-			// 			$(".scroll-to-me").remove();
-			// 		}
-			// 	}
-			// );
-			scope.$on('scrollToBottom', function(){
-				element.stop();
-				element.animate({
-					scrollTop: element.prop('scrollHeight')
-				}, 1000);
-			});
+			scope.$watch(
+				function(){
+					return element.children().length;
+				},
+				function(){
+					if(scope.base.autoScroll){
+						scope.base.autoScroll = false;
+						element.stop();
+						element.animate({
+							scrollTop: element.prop('scrollHeight')
+						}, 1000);
+					}
+				}
+			);
+			// scope.$on('scrollToBottom', function(){
+			// 	element.stop();
+			// 	element.animate({
+			// 		scrollTop: element.prop('scrollHeight')
+			// 	}, 1000);
+			// });
 		}
 	};
 })
