@@ -73,11 +73,38 @@ $(window).resize(function(){
 	$(".messages").css("min-height", h);
 });
 
-var options = window.location.search.slice(1).split('|').reduce(function(opt, str){
-	var arr = str.split('=');
-	opt[arr[0]] = arr[1] || true;
-	return opt;
-}, {});
+function getHashStringArgs()
+{
+    var qs = (location.hash.length > 0 ? location.hash.substring(1) : ""),
+ 
+        args = {},
+ 
+        items = qs.length ? qs.split("&") : [],
+        item = null,
+        name = null,
+        value = null,
+ 
+        i = 0,
+        len = items.length;
+ 
+    for(i = 0; i < len;i++)
+    {
+        item = items[i].split("=");
+        name = decodeURIComponent(item[0]);
+        value = decodeURIComponent(item[1]);
+ 
+        if(name.length)
+        {
+            args[name] = value;
+        }
+    }
+ 
+    return args;
+}
+ 
+var options = getHashStringArgs();
+
+window.location.hash = '';
 
 var rec = function() {
 	if (typeof (returnCitySN) == "undefined") {
