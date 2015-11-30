@@ -11,7 +11,7 @@ var appSecret = "()_%V&)*(EUca0w8tuV@$w51)ba7v(JUW%3w";
 var loginUser = function(user){
 	var profile = {
 		name: user.name,
-		id: user._id,
+		id: user._id || user.id,
 		ns: user.ns,
 		pref: user.pref
 	};

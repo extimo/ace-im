@@ -16,13 +16,7 @@ var genTypist = function(e){
 
 angular.module('AIMApp')
 .controller('AccountCtrl', function($scope, $timeout, $http, socket){
-	var savedUsers;
-	try{
-		savedUsers = JSON.parse($.cookie('aim_user'));
-	}
-	catch(e){
-		savedUsers = {};
-	}
+	var savedUsers = $.cookie('aim_user') || {};
 	// autologin the user using appToken saved in cookie
 	// 1) not in switching mode and there is only one saved user
 	if(!$.cookie('aim_switching') && !options.switch && Object.keys(savedUsers).length == 1){

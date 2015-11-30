@@ -348,15 +348,9 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		socket.create(user.socketToken);
 		delete user.socketToken;
 		
-		var savedUsers;
-		try{
-			savedUsers = JSON.parse($.cookie('aim_user'));
-		}
-		catch(e){
-			savedUsers = {};
-		}
+		var savedUsers = $.cookie('aim_user') || {};
 		savedUsers[user.name + '@' + user.ns] = user.appToken;
-		$.cookie('aim_user', JSON.stringify(savedUsers), { expires: 30 });
+		$.cookie('aim_user', savedUsers, { expires: 30 });
 		delete user.appToken;
 		
 		$rootScope.user = user;
@@ -364,13 +358,15 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	
 	$rootScope.switch = function(){
 		$.cookie('aim_switching', 'true');
-		$rootScope.user = null;
 		socket.close();
+		$rootScope.user = null;
 	};
 	
 	$rootScope.logoff = function(){
-		$.removeCookie('aim_user_' + $rootScope.user.name + '@' + $rootScope.user.ns);
-		$rootScope.user = null;
+		var savedUsers = $.cookie('aim_user') || {};
+		delete savedUsers[$rootScope.user.name + '@' + $rootScope.user.ns];
+		$.cookie('aim_user', savedUsers, { expires: 30 });
 		socket.close();
+		$rootScope.user = null;
 	}
 });

@@ -115,3 +115,5 @@ var rec = function() {
 }
 
 if(!options.norec) rec();
+
+$.cookie.json = true;
