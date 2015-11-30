@@ -34,8 +34,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		create: function(token, callback){
 			socket = io('/', {
 				query: 'token=' + token,
-				multiplex: false,
-				reconnection: false
+				multiplex: false
 			});
 			socket.on("error", function(error) {
 				if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
@@ -45,12 +44,6 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 					console.log('sock err');
 				}
 			});
-			socket.on('disconnect', function(){
-				$timeout(function () {
-					$rootScope.user = null;
-				});
-				console.log('disconnected');
-			})
 		},
 		close: function(){
 			socket.io.disconnect();
@@ -103,16 +96,21 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			unifiedMessageHeading: true
 		}
 	};
-	$scope.pref = $scope.user.pref;
-	if(!$scope.pref){
+	if($scope.user.pref && $scope.user.pref.roam){
+		$scope.pref = $scope.user.pref;
+	}
+	else if($.cookie('aim_pref')){
 		try{
-			$scope.pref = JSON.parse($.cookie('aim_pref')) || {
-				theme: 'default',
-				roam: false,
-				alarm: true
-			};
+			$scope.pref = JSON.parse($.cookie('aim_pref'));
 		}
 		catch(e){ }
+	}
+	else{
+		$scope.pref = {
+			theme: 'default',
+			roam: false,
+			alarm: true
+		};
 	}
 	
 	$scope.savePreferences = function(){
@@ -156,10 +154,6 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		if($scope.base.firstFetch){
 			$scope.base.firstFetch = false;
 			$scope.base.autoScroll = true;
-			
-			// $timeout(function(){
-			// 	$scope.$broadcast('scrollToBottom');
-			// }, 100);
 		}
 		$scope.base.messages = messages.concat($scope.base.messages || []);
 		$scope.base.fetching = false;
@@ -184,9 +178,6 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		if(message.from.id != $scope.base.me.id && $scope.pref.alarm){
 			reminder.sound();
 		}
-		// $timeout(function(){
-		// 	$scope.$broadcast('scrollToBottom');
-		// }, 100);
 	});
 	socket.on('messageCreated', function(ts, message){
 		$scope.base.messages = $scope.base.messages.map(function(msg){
@@ -362,11 +353,13 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	
 	$rootScope.switch = function(){
 		$.cookie('aim_switching', 'true');
+		$rootScope.user = null;
 		socket.close();
 	};
 	
 	$rootScope.logoff = function(){
 		$.removeCookie('aim_user_' + $rootScope.user.name + '@' + $rootScope.user.ns);
+		$rootScope.user = null;
 		socket.close();
 	}
 });
