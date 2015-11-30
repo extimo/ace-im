@@ -1,3 +1,4 @@
+/* global options */
 /* global malarkey */
 
 var genTypist = function(e){
@@ -15,18 +16,18 @@ var genTypist = function(e){
 
 angular.module('AIMApp')
 .controller('AccountCtrl', function($scope, $timeout, $http, socket){
-	var savedUsers = Object.keys($.cookie()).filter(function(key){
-		return key.indexOf('aim_user_') > -1;
-	}).map(function(key){
-		return JSON.parse($.cookie(key));
-	});
-	var savedUsersObj = {};
-	savedUsers.forEach(function(user) {
-		savedUsersObj[user.name + "@" + user.ns] = user;
-	}, this);
-	if(!$.cookie('aim_switching') && !options.switch && savedUsers.length == 1){
+	var savedUsers;
+	try{
+		savedUsers = JSON.parse($.cookie('aim_user'));
+	}
+	catch(e){
+		savedUsers = {};
+	}
+	// autologin the user using appToken saved in cookie
+	// 1) not in switching mode and there is only one saved user
+	if(!$.cookie('aim_switching') && !options.switch && Object.keys(savedUsers).length == 1){
 		$scope.state = { showActionIndicator: true };
-		$http.post('/api/autoLogin', savedUsers[0]).success(function(data){
+		$http.post('/api/autoLogin', {token: savedUsers[Object.keys(savedUsers)[0]]}).success(function(data){
 			if(data){
 				$scope.$emit('userLogined', data);
 			}
@@ -39,9 +40,10 @@ angular.module('AIMApp')
 			$scope.state.showActionIndicator = false;
 		});
 	}
-	else if(options.user && savedUsersObj[options.user]){		
+	// 2) user is specified in url hash
+	else if(options.user && savedUsers[options.user]){		
 		$scope.state = { showActionIndicator: true };
-		$http.post('/api/autoLogin', savedUsersObj[options.user]).success(function(data){
+		$http.post('/api/autoLogin', {token: savedUsers[options.user]}).success(function(data){
 			if(data){
 				$scope.$emit('userLogined', data);
 			}
@@ -54,6 +56,7 @@ angular.module('AIMApp')
 			$scope.state.showActionIndicator = false;
 		});
 	}
+	// there's no saved user to autologin or there're one more saved user, show welcome message
 	else{
 		$scope.state = { showWelcome: true };
 		$.removeCookie('aim_switching');
@@ -81,9 +84,11 @@ angular.module('AIMApp')
 		$scope.state.showWelcome = false;
 		$scope.state.showActionIndicator = true;
 		
+		// add default namespace if omitted
 		var fullName = $scope.info.name.indexOf('@') > -1 ? $scope.info.name : $scope.info.name + '@main';
-		if(savedUsersObj[fullName]){
-			return $http.post('/api/autoLogin', savedUsersObj[fullName]).success(function(data){
+		// the user is saved in cookie, try autologin
+		if(savedUsers[fullName]){
+			return $http.post('/api/autoLogin', {token: savedUsers[fullName]}).success(function(data){
 				if(data){
 					$scope.$emit('userLogined', data);
 				}
@@ -97,6 +102,7 @@ angular.module('AIMApp')
 			});
 		}
 		
+		// ortherwise, check whether the input username exist
 		$http.post('/api/checkExist', {
 			username: $scope.info.name
 		}).success(function(data){
@@ -115,6 +121,7 @@ angular.module('AIMApp')
 			$scope.state.showActionIndicator = false;
 		});
 	};
+	// validate the activation code
 	$scope.validate = function(){
 		$scope.state.showInputAC = false;
 		$scope.state.showHintInvalid = false;
@@ -138,6 +145,7 @@ angular.module('AIMApp')
 			$scope.state.showActionIndicator = false;
 		});
 	};
+	// register new user after valid activation code
 	$scope.register = function(){
 		$scope.state.showInputPassword = false;
 		$scope.state.showHintRegister = false;
@@ -156,6 +164,7 @@ angular.module('AIMApp')
 			$scope.state.showActionIndicator = false;
 		});
 	};
+	// login user with password
 	$scope.login = function(){
 		$scope.state.showInputPassword = false;
 		$scope.state.showHintLogin = false;

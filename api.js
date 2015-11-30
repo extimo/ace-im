@@ -5,7 +5,8 @@ var $ = require('./db').helper;
 var http = require('http');
 var bcrypt = require('bcrypt');
 
-var appSecret = "(CY9awb4vy5809ar0srbts90uqc23BY*RYB@)";
+var socketSecret = "(CY9awb4vy5809ar0srbts90uqc23BY*RYB@)";
+var appSecret = "()_%V&)*(EUca0w8tuV@$w51)ba7v(JUW%3w";
 
 var loginUser = function(user){
 	var profile = {
@@ -14,8 +15,10 @@ var loginUser = function(user){
 		ns: user.ns,
 		pref: user.pref
 	};
-	var token = jwt.sign(profile, appSecret, { expiresIn: 60 });
-	profile.token = token;
+	var socketToken = jwt.sign(profile, socketSecret, { expiresIn: 60 });
+	var appToken = jwt.sign(profile, appSecret, { expiresIn: "30d" });
+	profile.socketToken = socketToken;
+	profile.appToken = appToken;
 	return profile;
 }
 
@@ -47,28 +50,12 @@ router.post('/login', function (req, res) {
 });
 
 router.post('/autoLogin', function (req, res) {
-	if(!req.body){
-		return res.json(null);
+	try{
+		res.json(loginUser(jwt.verify(req.body.token || '', appSecret)));
 	}
-	$(function (db, done) {
-		if(!db) return res.json(null);
-		var users = db.collection('users');
-
-		users.find({ name: req.body.name, ns: req.body.ns }).toArray(function (err, docs) {
-			if(err || docs.length != 1){
-				res.json(null);
-				return done();
-			}
-			var user = docs[0];
-			if(user._id == req.body.id){
-				res.json(loginUser(user));
-			}
-			else{
-				res.json(null);
-			}
-			done();
-		});
-	});
+	catch(e){
+		res.json(null);
+	}
 });
 
 router.post('/checkExist', function (req, res) {

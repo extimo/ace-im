@@ -3,7 +3,7 @@ var $ = require('./db').helper;
 var messages = {};
 var currentUsers = {};
 
-var appSecret = "(CY9awb4vy5809ar0srbts90uqc23BY*RYB@)";
+var socketSecret = "(CY9awb4vy5809ar0srbts90uqc23BY*RYB@)";
 
 var saveMessage = function(room){
 	if(messages[room].length === 0) return;
@@ -47,7 +47,7 @@ var handleSave = null;
 		
 function handle(io) {
 	io.use(socketioJwt.authorize({
-		secret: appSecret,
+		secret: socketSecret,
 		handshake: true
 	}));
 	

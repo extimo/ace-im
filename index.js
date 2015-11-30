@@ -1,11 +1,4 @@
-var cluster = require('cluster');
-if (cluster.isMaster) {
-	cluster.fork();
-	cluster.on('exit', function () {
-		cluster.fork();
-	});
-}
-else {
+var startServer = function(){
 	var express = require('express');
 	var bodyParser = require('body-parser');
 	var app = express();
@@ -29,10 +22,25 @@ else {
 	var io = require('socket.io').listen(app.listen(app.get('port')));
 
 	require('./handle-io')(io);
+};
 
-	process.on('uncaughtException', function (err) {
-		console.log(err);
-		process.exit(1);
-	});
+if(process.env.NODE_ENV == 'development'){
+	startServer();
+}
+else{
+	var cluster = require('cluster');
+	if (cluster.isMaster) {
+		cluster.fork();
+		cluster.on('exit', function () {
+			cluster.fork();
+		});
+	}
+	else {
+		startServer();
 	
+		process.on('uncaughtException', function (err) {
+			console.log(err);
+			process.exit(1);
+		});
+	}
 }

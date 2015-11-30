@@ -345,10 +345,21 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 })
 .run(function($rootScope, socket){
 	$rootScope.$on('userLogined', function($event, user){
+		socket.create(user.socketToken);
+		delete user.socketToken;
+		
+		var savedUsers;
+		try{
+			savedUsers = JSON.parse($.cookie('aim_user'));
+		}
+		catch(e){
+			savedUsers = {};
+		}
+		savedUsers[user.name + '@' + user.ns] = user.appToken;
+		$.cookie('aim_user', JSON.stringify(savedUsers), { expires: 30 });
+		delete user.appToken;
+		
 		$rootScope.user = user;
-		socket.create(user.token);
-		delete user.token;
-		$.cookie('aim_user_' + user.name + '@' + user.ns, JSON.stringify(user), { expires: 30 });
 	});
 	
 	$rootScope.switch = function(){
