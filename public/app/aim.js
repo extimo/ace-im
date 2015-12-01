@@ -96,25 +96,22 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			unifiedMessageHeading: true
 		}
 	};
+	$scope.emojiStyles = ['apple', 'google', 'emojione', 'twitter'];
 	if($scope.user.pref && $scope.user.pref.roam){
 		$scope.pref = $scope.user.pref;
 	}
-	else if($.cookie('aim_pref')){
-		try{
-			$scope.pref = JSON.parse($.cookie('aim_pref'));
-		}
-		catch(e){ }
-	}
 	else{
-		$scope.pref = {
+		$scope.pref = $.cookie('aim_pref') || {
 			theme: 'default',
 			roam: false,
-			alarm: true
+			alarm: true,
+			emoji: 'emojione'
 		};
 	}
 	
 	$scope.savePreferences = function(){
-		$.cookie('aim_pref', JSON.stringify($scope.pref));
+		emoji.img_set = $scope.pref.emoji;
+		$.cookie('aim_pref', $scope.pref);
 		if($scope.pref.roam){
 			$http.post('/api/savePref', {
 				user: $scope.user,
@@ -149,6 +146,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	// initial fetch(5 records)
 	$scope.fetchMore();
 	$scope.base.fetchLen = 20;
+	emoji.img_set = $scope.pref.emoji;
 	
 	socket.on('appendMessages', function(messages){
 		if($scope.base.firstFetch){

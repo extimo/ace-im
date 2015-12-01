@@ -49,6 +49,7 @@ angular.module('AIMApp')
 		}).finally(function(){
 			$scope.state.showActionIndicator = false;
 		});
+		delete options.user;
 	}
 	// there's no saved user to autologin or there're one more saved user, show welcome message
 	else{

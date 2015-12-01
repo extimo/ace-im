@@ -12,13 +12,13 @@ var loginUser = function(user){
 	var profile = {
 		name: user.name,
 		id: user._id || user.id,
-		ns: user.ns,
-		pref: user.pref
+		ns: user.ns
 	};
 	var socketToken = jwt.sign(profile, socketSecret, { expiresIn: 60 });
 	var appToken = jwt.sign(profile, appSecret, { expiresIn: "30d" });
 	profile.socketToken = socketToken;
 	profile.appToken = appToken;
+	profile.pref = user.pref;
 	return profile;
 }
 
