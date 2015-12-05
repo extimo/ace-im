@@ -116,7 +116,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			$http.post('/api/savePref', {
 				user: $scope.user,
 				pref: $scope.pref
-			})
+			});
 		}
 	}
 	
@@ -291,7 +291,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 			}
 			if(evt.which == 13){
 				if(ctrlDown){
-					element.val(element.val() + '\n');
+					element.val(element.val() + '\r\n');
 				}
 				else{
 					scope.$apply(function(){
@@ -348,7 +348,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		
 		var savedUsers = $.cookie('aim_user') || {};
 		savedUsers[user.name + '@' + user.ns] = user.appToken;
-		$.cookie('aim_user', savedUsers, { expires: 30 });
+		$.cookie('aim_user', savedUsers);
 		delete user.appToken;
 		
 		$rootScope.user = user;
@@ -363,7 +363,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	$rootScope.logoff = function(){
 		var savedUsers = $.cookie('aim_user') || {};
 		delete savedUsers[$rootScope.user.name + '@' + $rootScope.user.ns];
-		$.cookie('aim_user', savedUsers, { expires: 30 });
+		$.cookie('aim_user', savedUsers);
 		socket.close();
 		$rootScope.user = null;
 	}
