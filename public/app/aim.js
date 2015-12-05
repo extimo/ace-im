@@ -348,7 +348,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 		
 		var savedUsers = $.cookie('aim_user') || {};
 		savedUsers[user.name + '@' + user.ns] = user.appToken;
-		$.cookie('aim_user', savedUsers);
+		$.cookie('aim_user', savedUsers, {exipres: 30});
 		delete user.appToken;
 		
 		$rootScope.user = user;
@@ -363,7 +363,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	$rootScope.logoff = function(){
 		var savedUsers = $.cookie('aim_user') || {};
 		delete savedUsers[$rootScope.user.name + '@' + $rootScope.user.ns];
-		$.cookie('aim_user', savedUsers);
+		$.cookie('aim_user', savedUsers, {exipres: 30});
 		socket.close();
 		$rootScope.user = null;
 	}
