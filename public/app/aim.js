@@ -111,7 +111,7 @@ angular.module('AIMApp', ['angularMoment', 'monospaced.mousewheel'])
 	
 	$scope.savePreferences = function(){
 		emoji.img_set = $scope.pref.emoji;
-		$.cookie('aim_pref', $scope.pref);
+		$.cookie('aim_pref', $scope.pref, {expires: 365});
 		if($scope.pref.roam){
 			$http.post('/api/savePref', {
 				user: $scope.user,
